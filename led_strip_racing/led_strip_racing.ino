@@ -51,19 +51,20 @@
 
 #define DEBUG_SPEED_SCALE 1
 /// Led strip pin. A 500 <= R <= 1K in series should be used.
-#define PIN_LED A0
-/// Player 1 Pin switch. Internal pull-up; place the switch between PIN and GND.
+#define PIN_LED 3
+/*/// Player 1 Pin switch. Internal pull-up; place the switch between PIN and GND.
 #define PIN_P1 18
 /// Player 1 Pin switch. Internal pull-up; place the switch between PIN and GND.
 #define PIN_P2 19
 /// Player 1 Pin switch. Internal pull-up; place the switch between PIN and GND.
 #define PIN_P3 20
 /// Player 1 Pin switch. Internal pull-up; place the switch between PIN and GND.
-#define PIN_P4 21
+#define PIN_P4 21*/
+
 /// Speaker audio output. a C = 2.2uF should be placed in series between
 /// PIN and 8 Ohm speaker.
 #define PIN_LED_GRAANDI 2
-#define PIN_AUDIO 3 
+//#define PIN_AUDIO 3 
 /// Max number of players. Don't exceed 8.
 #define MAX_PLAYERS 4
 /// Led in the strip. A 5m 60led/m is the best :).
@@ -130,9 +131,9 @@ int tdelay = 5;
 void my_tone(uint16_t val){
   
   char *test=(char *)&val;
-  Serial2.write(255);
+  /*Serial2.write(255);
   Serial2.write(test[1]);
-  Serial2.write(test[0]);
+  Serial2.write(test[0]);*/
   Serial.write(255);
   Serial.write(test[1]);
   Serial.write(test[0]);
@@ -458,7 +459,7 @@ void reproduce_progressive(double pos){
 void setup()
 {
   Serial.begin(115200);
-  Serial2.begin(115200);
+  Serial.begin(115200);
   //Serial2.setTimeout(0);
   /*pinMode(5, INPUT_PULLUP);
   pinMode(6, INPUT_PULLUP);
@@ -471,11 +472,11 @@ void setup()
       my_tone(1);
       delay(10);
     }
-  }*/
+  }
   pinMode(PIN_P1, INPUT_PULLUP);
     pinMode(PIN_P2, INPUT_PULLUP);
     pinMode(PIN_P3, INPUT_PULLUP);
-    pinMode(PIN_P4, INPUT_PULLUP);
+    pinMode(PIN_P4, INPUT_PULLUP);*/
     
   double whole_bpm=0.0;
   for(int i=0; i<notes; i++){
@@ -500,7 +501,7 @@ void setup()
     };
     track.begin();
     
-    pinMode(PIN_AUDIO, OUTPUT);
+    //pinMode(PIN_AUDIO, OUTPUT);
     //set_ramp(28, 80, 101, 124);
     //set_ramp(26, 135, 158, 178);
     //set_loop(10, 20, 50, 80);
@@ -509,10 +510,10 @@ void setup()
       //  track.setPixelColor(i, track.Color(125, 0, (45 - gravity_map[i]) / 8)); //127
     //}
 
-    PIN[0] = PIN_P1;
+    /*PIN[0] = PIN_P1;
     PIN[1] = PIN_P2;
     PIN[2] = PIN_P3;
-    PIN[3] = PIN_P4;
+    PIN[3] = PIN_P4;*/
 
     COLORS[0] = COLOR2;
     COLORS[1] = COLOR1;
@@ -599,9 +600,9 @@ void loop()
     for(int i=0; i<4; i++){
       intrr[i]=false;
     }
-    while(Serial2.available()){
+    while(Serial.available()){
       //Serial.print((char)Serial2.read());
-      int z = Serial2.read();
+      int z = Serial.read();
       //Serial2.read();
       //Serial.println(z);
       if(z>0)
