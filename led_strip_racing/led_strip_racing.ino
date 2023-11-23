@@ -287,7 +287,6 @@ void start_race()
                                               
                                               Robson Couto, 2019
 */
-
 #define NOTE_B0  31
 #define NOTE_C1  33
 #define NOTE_CS1 35
@@ -387,22 +386,31 @@ int tempo = 140 * DEBUG_SPEED_SCALE;
 // a 4 means a quarter note, 8 an eighteenth , 16 sixteenth, so on
 // !!negative numbers are used to represent dotted notes,
 // so -4 means a dotted quarter note, that is, a quarter plus an eighteenth!!
-
 int melody[] = {
 
-  // Happy Birthday
-  // Score available at https://musescore.com/user/8221/scores/26906
+  // We Wish You a Merry Christmas
+  // Score available at https://musescore.com/user/6208766/scores/1497501
+  
+  NOTE_C5,4, //1
+  NOTE_F5,4, NOTE_F5,8, NOTE_G5,8, NOTE_F5,8, NOTE_E5,8,
+  NOTE_D5,4, NOTE_D5,4, NOTE_D5,4,
+  NOTE_G5,4, NOTE_G5,8, NOTE_A5,8, NOTE_G5,8, NOTE_F5,8,
+  NOTE_E5,4, NOTE_C5,4, NOTE_C5,4,
+  NOTE_A5,4, NOTE_A5,8, NOTE_AS5,8, NOTE_A5,8, NOTE_G5,8,
+  NOTE_F5,4, NOTE_D5,4, NOTE_C5,8, NOTE_C5,8,
+  NOTE_D5,4, NOTE_G5,4, NOTE_E5,4,
+  NOTE_F5,2,
+  
+  NOTE_C5,4,
 
-  NOTE_C4,4, NOTE_C4,8, 
-  NOTE_D4,-4, NOTE_C4,-4, NOTE_F4,-4,
-  NOTE_E4,-2, NOTE_C4,4, NOTE_C4,8, 
-  NOTE_D4,-4, NOTE_C4,-4, NOTE_G4,-4,
-  NOTE_F4,-2, NOTE_C4,4, NOTE_C4,8,
-
-  NOTE_C5,-4, NOTE_A4,-4, NOTE_F4,-4, 
-  NOTE_E4,-4, NOTE_D4,-4, NOTE_AS4,4, NOTE_AS4,8,
-  NOTE_A4,-4, NOTE_F4,-4, NOTE_G4,-4,
-  NOTE_F4,-2,
+  NOTE_F5,4, NOTE_F5,4, NOTE_F5,4,//17
+  NOTE_E5,2, NOTE_E5,4,
+  NOTE_F5,4, NOTE_E5,4, NOTE_D5,4,
+  NOTE_C5,2, NOTE_A5,4,
+  NOTE_AS5,4, NOTE_A5,4, NOTE_G5,4,
+  NOTE_C6,4, NOTE_C5,4, NOTE_C5,8, NOTE_C5,8,
+  NOTE_D5,4, NOTE_G5,4, NOTE_E5,4,
+  NOTE_F5,2,
  
 };
 
@@ -459,7 +467,7 @@ void reproduce_progressive(double pos){
 void setup()
 {
   Serial.begin(115200);
-  Serial.begin(115200);
+  //Serial2.begin(115200);
   //Serial2.setTimeout(0);
   /*pinMode(5, INPUT_PULLUP);
   pinMode(6, INPUT_PULLUP);
@@ -665,7 +673,7 @@ void loop()
     {
         (*draw_cars[j])();
     }
-  count++;
+    count++;
   //if(count%3==0){
     track.show();
   /*}{
