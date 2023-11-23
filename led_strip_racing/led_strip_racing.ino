@@ -278,6 +278,9 @@ void start_race()
     my_tone(1200);
     delay(2000 / DEBUG_SPEED_SCALE);
     my_tone(1);
+    while(Serial.available()>0){
+      Serial.read();
+      }
 }
 
 /* 
