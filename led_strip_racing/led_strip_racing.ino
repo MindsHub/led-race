@@ -155,9 +155,9 @@ void start_race() {
 
   // start afresh
   for (int k = 0; k < PLAYER_COUNT; k++) {
-      loops[k] = 0;
-      dists[k] = 0;
-      speeds[k] = 0;
+    loops[k] = 0;
+    dists[k] = 0;
+    speeds[k] = 0;
   }
 }
 
@@ -346,14 +346,14 @@ void setup() {
 
   pinMode(PIN_FINAL_LIGHTS, OUTPUT);
     
-  double whole_bpm=0.0;
+  double whole_bpm = 0.0;
   for (int i = 0; i < notes; i++) {
-    if (melody[i*2+1] < 0)
-      whole_bpm -= 1.5/melody[i*2+1];
-    else
+    if (melody[i*2+1] > 0)
       whole_bpm += 1.0/melody[i*2+1];
+    else
+      whole_bpm += 1.5/-melody[i*2+1];
   }
-  bpm_length=LOOP_COUNT*PIXEL_COUNT/whole_bpm;
+  bpm_length = LOOP_COUNT * PIXEL_COUNT / whole_bpm;
 
   for (int i = 0; i < PIXEL_COUNT; i++) {
       gravity_map[i] = 127;
@@ -380,11 +380,6 @@ void setup() {
   set_gravity_range(768, 820, 255);
   set_gravity_range(824, 890, 0);
   track.begin();
-
-  loops[0] = 0;
-  loops[1] = 0;
-  loops[2] = 0;
-  loops[3] = 0;
   
   // Uncomment to viusalize the leds with gravity not equal to 127
   /*for (int i = 0; i < PIXEL_COUNT; i++) {
