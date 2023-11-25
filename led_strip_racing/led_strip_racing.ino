@@ -308,14 +308,14 @@ double reproduce_until;
 int music_index=0;
 unsigned long last_update=0;
 void reproduce_progressive(double pos){
-  if(millis()-last_update>1000){
+  if (millis()-last_update>1000) {
     my_tone(1);
   }
 
   if (pos<2) {
+    last_update = millis();
     music_index = 0;
     reproduce_until = 0.0;
-    last_update = millis();
 
   } else if (pos>=2 && pos>reproduce_until) {
     last_update = millis();
@@ -323,17 +323,17 @@ void reproduce_progressive(double pos){
 
     if (music_index%2 == 1) {
       if (melody[music_index] > 0) {
-        reproduce_until += (bpm_length/melody[music_index])*0.1;
+        reproduce_until += (bpm_length/melody[music_index]) * 0.1;
       } else {
-        reproduce_until += (bpm_length/-melody[music_index])*0.15;
+        reproduce_until += (bpm_length/-melody[music_index]) * 0.15;
       }
       my_tone(1);
 
     } else {
       if (melody[music_index+1] > 0) {
-        reproduce_until += (bpm_length/melody[music_index+1])*0.9;
+        reproduce_until += (bpm_length/melody[music_index+1]) * 0.9;
       } else {
-        reproduce_until += (bpm_length/-melody[music_index+1])*1.35;
+        reproduce_until += (bpm_length/-melody[music_index+1]) * 1.35;
       }
       my_tone(melody[music_index]);
     }
