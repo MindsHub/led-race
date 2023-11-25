@@ -100,7 +100,7 @@ constexpr uint32_t RAINBOW[] = {
   color(0, 214, 255),
   color(0, 161, 255),
   color(0, 107, 255),
-  color(0, 53, 255)
+  color(0, 53, 255),
 };
 
 void aureola(uint32_t color) {
@@ -321,16 +321,16 @@ void reproduce_progressive(double pos){
     last_update = millis();
     music_index += 1;
 
-    if(music_index%2 == 1) {
-      if(melody[music_index]>0) {
-        reproduce_until += (bpm_length/melody[music_index+1])*0.1;
+    if (music_index%2 == 1) {
+      if (melody[music_index] > 0) {
+        reproduce_until += (bpm_length/melody[music_index])*0.1;
       } else {
-        reproduce_until += (bpm_length/-melody[music_index+1])*0.15;
+        reproduce_until += (bpm_length/-melody[music_index])*0.15;
       }
       my_tone(1);
 
     } else {
-      if(melody[music_index+1]>0) {
+      if (melody[music_index+1] > 0) {
         reproduce_until += (bpm_length/melody[music_index+1])*0.9;
       } else {
         reproduce_until += (bpm_length/-melody[music_index+1])*1.35;
