@@ -451,20 +451,23 @@ void loop()
     track.setPixelColor(i, color(0,0,0));
   }
 
-  bool intrr[4];
-  for(int i=0; i<4; i++){
-    intrr[i] = false;
+  // check for button presses from the other Arduino
+  bool pressed[PLAYER_COUNT];
+  for (int i=0; i<PLAYER_COUNT; i++) {
+    pressed[i] = false;
   }
-  while(Serial2.available()){
+  while (Serial2.available()) {
     int z = Serial2.read();
-    if (z > 0)
-      intrr[z-1] = true;
+    if (z > 0 && z <= PLAYER_COUNT)
+      pressed[z-1] = true;
   }
 
+  // update speeds, distances and loop count for all players
   for (int i = 0; i < PLAYER_COUNT; i++) {
-    if(intrr[i]) {
+    if(pressed[i]) {
       speeds[i] += ACCELERATION;
     }
+
     if ((gravity_map[(word)dists[i] % PIXEL_COUNT]) < 127)
       speeds[i] -= GRAVITY * (127 - (gravity_map[(word)dists[i] % PIXEL_COUNT]));
     if ((gravity_map[(word)dists[i] % PIXEL_COUNT]) > 127)
@@ -472,24 +475,26 @@ void loop()
 
     speeds[i] -= speeds[i] * FRICTION;
     dists[i] += speeds[i];
-  }
 
-  for (int j = 0; j < PLAYER_COUNT; j++) {
-    if (dists[j] > PIXEL_COUNT * loops[j]) {
-      loops[j]++;
-      if(loops[j] > LOOP_COUNT) {
-          for (int i = 0; i < PIXEL_COUNT; i++) {
-            if (i%10==0) {
-              track.setPixelColor(i, colors[j]);
-            }
+    if (dists[i] > PIXEL_COUNT * loops[i]) {
+      loops[i]++;
+      if(loops[i] > LOOP_COUNT) {
+        for (int j = 0; j < PIXEL_COUNT; j++) {
+          if (j%10==0) {
+            track.setPixelColor(j, colors[i]);
           }
-          track.show();
-          winner_fx();
+        }
+        track.show();
+        winner_fx();
 
-          start_race();
-          break;
+        start_race();
+        return;
       }
     }
+  }
+
+  // draw all cars
+  for (int j = 0; j < PLAYER_COUNT; j++) {
     draw_car(j);
   }
   
