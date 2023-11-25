@@ -112,9 +112,7 @@ void aureola(uint32_t color) {
 }
 
 void start_race() {
-  for (int i = 0; i < PIXEL_COUNT; i++) {
-    track.setPixelColor(i, color(0, 0, 0));
-  }
+  track.clear();
   track.show();
   delay(2000 / DEBUG_SPEED_SCALE);
   // Start the Semaphore. TODO: Add start button in v1.0.1
@@ -438,6 +436,9 @@ void winner_fx() {
 
 void loop()
 {
+  // redraw the track from start
+  track.clear();
+
   double best=0.0;
   for(int i=0; i<PLAYER_COUNT; i++){
     if(best<dists[i]){
@@ -445,11 +446,6 @@ void loop()
     }
   }
   reproduce_progressive(best);
-
-  for(int i=0;i<PIXEL_COUNT;i++)
-  {
-    track.setPixelColor(i, color(0,0,0));
-  }
 
   // check for button presses from the other Arduino
   bool pressed[PLAYER_COUNT];
@@ -479,10 +475,8 @@ void loop()
     if (dists[i] > PIXEL_COUNT * loops[i]) {
       loops[i]++;
       if(loops[i] > LOOP_COUNT) {
-        for (int j = 0; j < PIXEL_COUNT; j++) {
-          if (j%10==0) {
-            track.setPixelColor(j, colors[i]);
-          }
+        for (int j = 0; j < PIXEL_COUNT; j += 10) {
+          track.setPixelColor(j, colors[i]);
         }
         track.show();
         winner_fx();
