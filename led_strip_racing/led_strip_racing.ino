@@ -1,6 +1,5 @@
 #include <Adafruit_NeoPixel.h>
-#include "song.h"
-
+#include "music.h"
 
 /// set this to a value higher than one to make all interactions faster, for debugging purposes.
 constexpr int DEBUG_SPEED_SCALE = 1;
@@ -61,14 +60,6 @@ float loops[PLAYER_COUNT];
 Adafruit_NeoPixel track = Adafruit_NeoPixel(PIXEL_COUNT, PIN_LED, NEO_GRB + NEO_KHZ800);
 
 
-void my_tone(uint16_t val){
-  char *test = (char *)&val;
-  Serial2.write(255);
-  Serial2.write(test[1]);
-  Serial2.write(test[0]);
-}
-
-
 void set_gravity_range(int start, int end, byte value) {
   for (int i=start; i<=end; ++i) {
     gravity_map[i] = value;
@@ -125,7 +116,7 @@ void start_race() {
   track.setPixelColor(3, color(255, 0, 0));
   aureola(color(255, 0, 0));
   track.show();
-  my_tone(400);
+  myTone(400);
   delay(2000 / DEBUG_SPEED_SCALE);
 
   // Yellow Light
@@ -135,7 +126,7 @@ void start_race() {
   track.setPixelColor(5, color(255, 255, 0));
   aureola(color(0, 0, 0));
   track.show();
-  my_tone(600);
+  myTone(600);
   delay(2000 / DEBUG_SPEED_SCALE);
 
   // Green Light
@@ -143,11 +134,11 @@ void start_race() {
   track.setPixelColor(7, color(0, 255, 0));
   aureola(color(255, 0, 0));
   track.show();
-  my_tone(1200);
+  myTone(1200);
   delay(2000 / DEBUG_SPEED_SCALE);
 
   // turn off audio at the end
-  my_tone(1);
+  myNoTone();
 
   // discard any button press happened in the meantime
   while (Serial2.available()) {
@@ -163,68 +154,10 @@ void start_race() {
 }
 
 
-// change this to make the song slower or faster
-int tempo = 140 * DEBUG_SPEED_SCALE;
-
-// sizeof gives the number of bytes, each int value is composed of two bytes (16 bits)
-// there are two values per note (pitch and duration), so for each note there are four bytes
-int notes = sizeof(melody) / sizeof(melody[0]) / 2;
-
-// this calculates the duration of a whole note in ms
-int wholenote = (60000 * 4) / tempo;
-
-int divider = 0, noteDuration = 0;
-double bpm_length;
-double reproduce_until;
-int music_index=0;
-unsigned long last_update=0;
-void reproduce_progressive(double pos){
-  if (millis()-last_update>1000) {
-    my_tone(1);
-  }
-
-  if (pos<2) {
-    last_update = millis();
-    music_index = 0;
-    reproduce_until = 0.0;
-
-  } else if (pos>=2 && pos>reproduce_until) {
-    last_update = millis();
-    music_index += 1;
-
-    if (music_index%2 == 1) {
-      if (melody[music_index] > 0) {
-        reproduce_until += (bpm_length/melody[music_index]) * 0.1;
-      } else {
-        reproduce_until += (bpm_length/-melody[music_index]) * 0.15;
-      }
-      my_tone(1);
-
-    } else {
-      if (melody[music_index+1] > 0) {
-        reproduce_until += (bpm_length/melody[music_index+1]) * 0.9;
-      } else {
-        reproduce_until += (bpm_length/-melody[music_index+1]) * 1.35;
-      }
-      my_tone(melody[music_index]);
-    }
-  }
-}
-
-
 void setup() {
   Serial2.begin(115200);
 
   pinMode(PIN_FINAL_LIGHTS, OUTPUT);
-    
-  double whole_bpm = 0.0;
-  for (int i = 0; i < notes; i++) {
-    if (melody[i*2+1] > 0)
-      whole_bpm += 1.0/melody[i*2+1];
-    else
-      whole_bpm += 1.5/-melody[i*2+1];
-  }
-  bpm_length = LOOP_COUNT * PIXEL_COUNT / whole_bpm;
 
   for (int i = 0; i < PIXEL_COUNT; i++) {
       gravity_map[i] = 127;
@@ -266,42 +199,21 @@ void setup() {
   start_race();
 }
 
-void reproduce_music() {
-  // iterate over the notes of the melody. 
-  // Remember, the array is twice the number of notes (notes + durations)
-  for (int thisNote = 0; thisNote < notes * 2; thisNote = thisNote + 2) {
 
-    // calculates the duration of each note
-    divider = melody[thisNote + 1];
-    if (divider > 0) {
-      // regular note, just proceed
-      noteDuration = (wholenote) / divider;
-    } else if (divider < 0) {
-      // dotted notes are represented with negative durations!!
-      noteDuration = (wholenote) / abs(divider);
-      noteDuration *= 1.5; // increases the duration in half for dotted notes
-    }
-
-    // we only play the note for 90% of the duration, leaving 10% as a pause
-    my_tone(melody[thisNote]);
-    delay(noteDuration*0.9);
-    my_tone(1);
-    delay(noteDuration*0.1);
-    
-    // stop the waveform generation before the next note.
-    my_tone(1);
+void onPlayerWon(int i) {
+  for (int j = 0; j < PIXEL_COUNT; j += 10) {
+    track.setPixelColor(j, colors[i]);
   }
-}
-
-
-void winner_fx() {
+  track.show();
+  
   digitalWrite(PIN_FINAL_LIGHTS, HIGH);
-  reproduce_music();
+  reproduceMusic(140 / DEBUG_SPEED_SCALE);
   digitalWrite(PIN_FINAL_LIGHTS, LOW);
+
+  start_race();
 }
 
-void loop()
-{
+void loop() {
   // redraw the track from start
   track.clear();
 
@@ -311,7 +223,7 @@ void loop()
       best=dists[i];
     }
   }
-  reproduce_progressive(best);
+  reproduceMusicProgressive(best);
 
   // check for button presses from the other Arduino
   bool pressed[PLAYER_COUNT];
@@ -341,14 +253,8 @@ void loop()
     if (dists[i] > PIXEL_COUNT * loops[i]) {
       loops[i]++;
       if(loops[i] > LOOP_COUNT) {
-        for (int j = 0; j < PIXEL_COUNT; j += 10) {
-          track.setPixelColor(j, colors[i]);
-        }
-        track.show();
-        winner_fx();
-
-        start_race();
-        return;
+        onPlayerWon(i);
+        return; // restart loop() from the beginning
       }
     }
   }
