@@ -101,7 +101,7 @@
 // a 4 means a quarter note, 8 an eighteenth , 16 sixteenth, so on
 // !!negative numbers are used to represent dotted notes,
 // so -4 means a dotted quarter note, that is, a quarter plus an eighteenth!!
-int melody[] = {
+constexpr int melody[] = {
 
   // We Wish You a Merry Christmas
   // Score available at https://musescore.com/user/6208766/scores/1497501
