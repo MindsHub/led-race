@@ -77,7 +77,7 @@ void set_gravity_range(int start, int end, byte value) {
 uint32_t colors[4]={COLOR1, COLOR2, COLOR3, COLOR4};
 void draw_car(int index) {
   track.setPixelColor(((word)dists[index] % PIXEL_COUNT), colors[index]);
-  track.setPixelColor(((word)dists[index] % PIXEL_COUNT)+1, colors[index]);
+  track.setPixelColor(((word)(dists[index]+1) % PIXEL_COUNT), colors[index]);
 }
 
 
