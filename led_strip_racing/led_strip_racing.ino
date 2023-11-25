@@ -1,139 +1,70 @@
-/**
- * @file led_strip_race.ino
- * @author Christian Corsetti (c.corsetti.01@gmail.com)
- * @brief Funny led race with Arduino and WS2812b led strip. Made in Fablab Valsamoggia.
- * @version 0.0.0
- * @date 29-04-2019
- * 
- * @copyright MIT License
- * Copyright (c) [year] [fullname]
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
-
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
-
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- * 
- * @note CHANGES
- * @parblock
- *  29-04-2019 - Christian Corsetti:
- *      - Add multiple players.
- * 
- *  01-05-2019 - Christian Corsetti:
- *      - Bug fix: remove third "ghost" player when there are only two players.
- * 
- *  03-05-2019 - Christian Corsetti:
- *      - Add comments and clean code.
- *  27-05-2019 - Christian Corsetti:
- *      - Remove loop and ramps, reduce ACEL param.
- *      - Bug fix on loop create function: missing k.
- * **FROZEN HERE V0.0.0**
- * @endparblock
- */
-/*----------------------------------------------------------------------------*/
-/*                                   INCLUDE                                  */
-/*----------------------------------------------------------------------------*/
 #include <Adafruit_NeoPixel.h>
-/*----------------------------------------------------------------------------*/
-/*                                   DEFINE                                   */
-/*----------------------------------------------------------------------------*/
 
-#define DEBUG_SPEED_SCALE 1
+
+/// set this to a value higher than one to make all interactions faster, for debugging purposes.
+constexpr int DEBUG_SPEED_SCALE = 1;
 /// Led strip pin. A 500 <= R <= 1K in series should be used.
-#define PIN_LED 3
-/*/// Player 1 Pin switch. Internal pull-up; place the switch between PIN and GND.
-#define PIN_P1 18
-/// Player 1 Pin switch. Internal pull-up; place the switch between PIN and GND.
-#define PIN_P2 19
-/// Player 1 Pin switch. Internal pull-up; place the switch between PIN and GND.
-#define PIN_P3 20
-/// Player 1 Pin switch. Internal pull-up; place the switch between PIN and GND.
-#define PIN_P4 21*/
+constexpr int PIN_LED = 3;
+/// An additional LED strip or some other lights that turn on after the game finishes.
+constexpr int PIN_FINAL_LIGHTS = 2;
 
-/// Speaker audio output. a C = 2.2uF should be placed in series between
-/// PIN and 8 Ohm speaker.
-#define PIN_LED_GRAANDI 2
-//#define PIN_AUDIO 3 
 /// Max number of players. Don't exceed 8.
-#define MAX_PLAYERS 2
+constexpr int PLAYER_COUNT = 2;
 /// Led in the strip. A 5m 60led/m is the best :).
-#define NPIXELS (900 / DEBUG_SPEED_SCALE)
-/// Player 1 color. RED
-#define COLOR1 track.Color(0, 0, 255)
-/// Player 2 color. GREEN
-#define COLOR2 track.Color(0, 255, 0)
-/// Player 3 color. BLUE
-#define COLOR3 track.Color(255, 0, 0)
-/// Player 4 color. YELLOW
-#define COLOR4 track.Color(255, 255, 0)
-/// Player 5 color. PURPLE
-#define COLOR5 track.Color(178, 102, 255)
-/// Player 6 color. PINK
-#define COLOR6 track.Color(204, 0, 102)
-/// Player 7 color. ORANGE
-#define COLOR7 track.Color(204, 102, 0)
-/// Player 8 color. LIGHT BLUE
-#define COLOR8 track.Color(153, 255, 255)
-
-/// 127 is the normal gravity. Values under this value means there is a hill,
-/// while values above 127 means there is a downhill.
-byte gravity_map[NPIXELS];
-/// Lenght of start beep.
-int TBEEP = 3;
-/// It's pretty self-explanatory.
-float speeds[MAX_PLAYERS];
-/// It's pretty self-explanatory.
-float dists[MAX_PLAYERS];
-/// It's pretty self-explanatory.
-float loops[MAX_PLAYERS];
-/// It's pretty self-explanatory.
-int PIN[MAX_PLAYERS];
+constexpr int PIXEL_COUNT = 900 / DEBUG_SPEED_SCALE;
 /// Total laps race.
-byte loop_max = 1;
+constexpr int LOOP_COUNT = 1;
+
 /// Acceleration value. When a player pushs the button, his speed increases
 /// with this value. Otherwise his speed decreases. 
 /// An high value means more speed and power :)
-float ACEL = 0.6;// 0.15;//0.2;
+constexpr float ACCELERATION = 0.6;// 0.15;//0.2;
 /// Simulate the friction between asphalt and car's "wheels". Car speed 
 /// decreases every time with this value.
-float friction = 0.05;//0.012;
+constexpr float FRICTION = 0.05;//0.012;
 /// Weight force simulation. Used in loop and ramp "gravity" simulation.
-float g_force = -0.00005;//0.003; 
+constexpr float GRAVITY = -0.00005;//0.003;
+
+// copied from Adafruit_NeoPixel, but made `constexpr`
+constexpr uint32_t color(uint8_t r, uint8_t g, uint8_t b) {
+  return ((uint32_t)r << 16) | ((uint32_t)g << 8) | b;
+}
+
+/// Player 1 color. BLUE
+constexpr uint32_t COLOR1 = color(0, 0, 255);
+/// Player 2 color. GREEN
+constexpr uint32_t COLOR2 = color(0, 255, 0);
+/// Player 3 color. RED
+constexpr uint32_t COLOR3 = color(255, 0, 0);
+/// Player 4 color. YELLOW
+constexpr uint32_t COLOR4 = color(255, 255, 0);
+/// Player 5 color. PURPLE
+constexpr uint32_t COLOR5 = color(178, 102, 255);
+/// Player 6 color. PINK
+constexpr uint32_t COLOR6 = color(204, 0, 102);
+/// Player 7 color. ORANGE
+constexpr uint32_t COLOR7 = color(204, 102, 0);
+/// Player 8 color. LIGHT BLUE
+constexpr uint32_t COLOR8 = color(153, 255, 255);
+
+/// 127 is the normal gravity. Values under this value means there is a hill,
+/// while values above 127 means there is a downhill.
+byte gravity_map[PIXEL_COUNT];
+
+// current speeds, positions and number of loops of all the players
+float speeds[PLAYER_COUNT];
+float dists[PLAYER_COUNT];
+float loops[PLAYER_COUNT];
+
 /// Neopixel class for the led strip.
-Adafruit_NeoPixel track = Adafruit_NeoPixel(NPIXELS, PIN_LED, NEO_GRB + NEO_KHZ800);
-/// It's pretty self-explanatory. (in milliseconds).
-int tdelay = 5;
-//==============================================================================
-/**
- * @brief  Set the gravity array for a ramp.
- * @note   
- * @param  ramp_high: high of the ramp; set the "steep".
- * @param  ramp_startl: start led strip for the hill.
- * @param  ramp_centerl: center led of the ramp.
- * @param  ramp_endl: last led of the ramp.
- * @retval None
- */
+Adafruit_NeoPixel track = Adafruit_NeoPixel(PIXEL_COUNT, PIN_LED, NEO_GRB + NEO_KHZ800);
+
+
 void my_tone(uint16_t val){
-  
-  char *test=(char *)&val;
-  /*Serial2.write(255);
-  Serial2.write(test[1]);
-  Serial2.write(test[0]);*/
+  char *test = (char *)&val;
   Serial2.write(255);
   Serial2.write(test[1]);
   Serial2.write(test[0]);
-  //Serial2.println(val);
 }
 
 
@@ -143,105 +74,93 @@ void set_gravity_range(int start, int end, byte value) {
   }
 }
 
-/**
- * @brief  Car one: color GREEN.
- * @note   the number of led increase with the laps.
- * @retval None
- */
 uint32_t colors[4]={COLOR1, COLOR2, COLOR3, COLOR4};
-void draw_car(int index)
-{
-
-    track.setPixelColor(((word)dists[index] % NPIXELS),
-      colors[index]);
-    track.setPixelColor(((word)dists[index] % NPIXELS)+1,
-      colors[index]);
-    
+void draw_car(int index) {
+  track.setPixelColor(((word)dists[index] % PIXEL_COUNT), colors[index]);
+  track.setPixelColor(((word)dists[index] % PIXEL_COUNT)+1, colors[index]);
 }
 
 
-const uint32_t rainbow[] = {
-  Adafruit_NeoPixel::Color(255, 0, 0),
-  Adafruit_NeoPixel::Color(255, 53, 0),
-  Adafruit_NeoPixel::Color(255, 107, 0),
-  Adafruit_NeoPixel::Color(255, 161, 0),
-  Adafruit_NeoPixel::Color(255, 214, 0),
-  Adafruit_NeoPixel::Color(241, 255, 0),
-  Adafruit_NeoPixel::Color(187, 255, 0),
-  Adafruit_NeoPixel::Color(134, 255, 0),
-  Adafruit_NeoPixel::Color(80, 255, 0),
-  Adafruit_NeoPixel::Color(26, 255, 0),
-  Adafruit_NeoPixel::Color(0, 255, 26),
-  Adafruit_NeoPixel::Color(0, 255, 80),
-  Adafruit_NeoPixel::Color(0, 255, 134),
-  Adafruit_NeoPixel::Color(0, 255, 187),
-  Adafruit_NeoPixel::Color(0, 255, 241),
-  Adafruit_NeoPixel::Color(0, 214, 255),
-  Adafruit_NeoPixel::Color(0, 161, 255),
-  Adafruit_NeoPixel::Color(0, 107, 255),
-  Adafruit_NeoPixel::Color(0, 53, 255)
+constexpr uint32_t RAINBOW[] = {
+  color(255, 0, 0),
+  color(255, 53, 0),
+  color(255, 107, 0),
+  color(255, 161, 0),
+  color(255, 214, 0),
+  color(241, 255, 0),
+  color(187, 255, 0),
+  color(134, 255, 0),
+  color(80, 255, 0),
+  color(26, 255, 0),
+  color(0, 255, 26),
+  color(0, 255, 80),
+  color(0, 255, 134),
+  color(0, 255, 187),
+  color(0, 255, 241),
+  color(0, 214, 255),
+  color(0, 161, 255),
+  color(0, 107, 255),
+  color(0, 53, 255)
 };
 
 void aureola(uint32_t color) {
-  if (NPIXELS == 900) {
+  if (PIXEL_COUNT == 900) {
     for (int i=0; i<19; ++i) {
-      track.setPixelColor(i+900-77-10, color == 0 ? 0 : rainbow[i]);
+      track.setPixelColor(i+900-77-10, color == 0 ? 0 : RAINBOW[i]);
     }
   }
 }
 
-void start_race()
-{
-    for (int i = 0; i < NPIXELS; i++)
-    {
-        track.setPixelColor(i, track.Color(0, 0, 0));
-    }
-    track.show();
-    delay(2000 / DEBUG_SPEED_SCALE);
-    // Start the Semaphore. TODO: Add start button in v1.0.1
+void start_race() {
+  for (int i = 0; i < PIXEL_COUNT; i++) {
+    track.setPixelColor(i, color(0, 0, 0));
+  }
+  track.show();
+  delay(2000 / DEBUG_SPEED_SCALE);
+  // Start the Semaphore. TODO: Add start button in v1.0.1
 
-    // Red light 
-    track.setPixelColor(5, track.Color(0, 0, 0));
-    track.setPixelColor(6, track.Color(0, 0, 0));
-    track.setPixelColor(4, track.Color(255, 0, 0));
-    track.setPixelColor(3, track.Color(255, 0, 0));
-    aureola(track.Color(255, 0, 0));
-    track.show();
-    my_tone(400);
-    delay(2000 / DEBUG_SPEED_SCALE);
+  // Red light 
+  track.setPixelColor(5, color(0, 0, 0));
+  track.setPixelColor(6, color(0, 0, 0));
+  track.setPixelColor(4, color(255, 0, 0));
+  track.setPixelColor(3, color(255, 0, 0));
+  aureola(color(255, 0, 0));
+  track.show();
+  my_tone(400);
+  delay(2000 / DEBUG_SPEED_SCALE);
 
-    // Yellow Light
-    track.setPixelColor(8, track.Color(0, 0, 0));
-    track.setPixelColor(7, track.Color(0, 0, 0));
-    track.setPixelColor(6, track.Color(255, 255, 0));
-    track.setPixelColor(5, track.Color(255, 255, 0));
-    aureola(track.Color(0, 0, 0));
-    track.show();
-    my_tone(600);
-    delay(2000 / DEBUG_SPEED_SCALE);
+  // Yellow Light
+  track.setPixelColor(8, color(0, 0, 0));
+  track.setPixelColor(7, color(0, 0, 0));
+  track.setPixelColor(6, color(255, 255, 0));
+  track.setPixelColor(5, color(255, 255, 0));
+  aureola(color(0, 0, 0));
+  track.show();
+  my_tone(600);
+  delay(2000 / DEBUG_SPEED_SCALE);
 
-    // Green Light
-    track.setPixelColor(8, track.Color(0, 255, 0));
-    track.setPixelColor(7, track.Color(0, 255, 0));
-    aureola(track.Color(255, 0, 0));
-    track.show();
-    my_tone(1200);
-    delay(2000 / DEBUG_SPEED_SCALE);
+  // Green Light
+  track.setPixelColor(8, color(0, 255, 0));
+  track.setPixelColor(7, color(0, 255, 0));
+  aureola(color(255, 0, 0));
+  track.show();
+  my_tone(1200);
+  delay(2000 / DEBUG_SPEED_SCALE);
 
-    aureola(track.Color(0, 0, 0));
-    track.show();
-    aureola(track.Color(0, 255, 0));
-    track.show();
-    my_tone(1);
-    while(Serial2.available()){
-      Serial2.read();
-    }
-    for (int k = 0; k < MAX_PLAYERS; k++)
-    {
-        loops[k] = 0;
-        dists[k] = 0;
-        speeds[k] = 0;
-    }
+  // turn off audio at the end
+  my_tone(1);
+
+  // discard any button press happened in the meantime
+  while (Serial2.available()) {
+    Serial2.read();
+  }
+
+  // start afresh
+  for (int k = 0; k < PLAYER_COUNT; k++) {
+      loops[k] = 0;
+      dists[k] = 0;
+      speeds[k] = 0;
+  }
 }
 
 /* 
@@ -392,144 +311,95 @@ int music_index=0;
 unsigned long last_update=0;
 void reproduce_progressive(double pos){
   if(millis()-last_update>1000){
-    /*Serial2.print("here ");
-    Serial2.print(millis());
-    Serial2.print(" ");
-    Serial2.println(last_update);*/
     my_tone(1);
   }
-  if(pos<2){
-    music_index=0;
-    reproduce_until=0.0;
-    last_update=millis();
-  }
-  if(pos>=2&&pos>reproduce_until){
-    last_update=millis();
-    //tone(PIN_AUDIO, 400, 10);
-    music_index+=1;
-    if(music_index%2==1){
-      //reproduce_until+=(bpm_length/melody[music_index])*0.1;
-      if(melody[music_index]>0){
-          reproduce_until+=(bpm_length/melody[music_index+1])*0.1;
-        }else{
-          reproduce_until+=(bpm_length/-melody[music_index+1])*0.15;
-        }
+
+  if (pos<2) {
+    music_index = 0;
+    reproduce_until = 0.0;
+    last_update = millis();
+
+  } else if (pos>=2 && pos>reproduce_until) {
+    last_update = millis();
+    music_index += 1;
+
+    if(music_index%2 == 1) {
+      if(melody[music_index]>0) {
+        reproduce_until += (bpm_length/melody[music_index+1])*0.1;
+      } else {
+        reproduce_until += (bpm_length/-melody[music_index+1])*0.15;
+      }
       my_tone(1);
-    }else{
-      if(melody[music_index+1]>0){
-          reproduce_until+=(bpm_length/melody[music_index+1])*0.9;
-        }else{
-          reproduce_until+=(bpm_length/-melody[music_index+1])*1.35;
-        }
-      //reproduce_until+=(bpm_length/melody[music_index+1])*0.9;
+
+    } else {
+      if(melody[music_index+1]>0) {
+        reproduce_until += (bpm_length/melody[music_index+1])*0.9;
+      } else {
+        reproduce_until += (bpm_length/-melody[music_index+1])*1.35;
+      }
       my_tone(melody[music_index]);
     }
   }
 }
 
 
-void setup()
-{
+void setup() {
   Serial2.begin(115200);
-  //Serial2.begin(115200);
-  //Serial2.setTimeout(0);
-  /*pinMode(5, INPUT_PULLUP);
-  pinMode(6, INPUT_PULLUP);
-  pinMode(7, INPUT_PULLUP);
-  while(true){
-    if(digitalRead(5)==LOW||digitalRead(6)==LOW||digitalRead(7)==LOW){
-      my_tone(400);
-      delay(10);
-    }else{
-      my_tone(1);
-      delay(10);
-    }
-  }
-  pinMode(PIN_P1, INPUT_PULLUP);
-    pinMode(PIN_P2, INPUT_PULLUP);
-    pinMode(PIN_P3, INPUT_PULLUP);
-    pinMode(PIN_P4, INPUT_PULLUP);*/
+
+  pinMode(PIN_FINAL_LIGHTS, OUTPUT);
     
   double whole_bpm=0.0;
-  for(int i=0; i<notes; i++){
-    if(melody[i*2+1]<0)
-      whole_bpm-=1.5/melody[i*2+1];
+  for (int i = 0; i < notes; i++) {
+    if (melody[i*2+1] < 0)
+      whole_bpm -= 1.5/melody[i*2+1];
     else
-      whole_bpm+=1.0/melody[i*2+1];
+      whole_bpm += 1.0/melody[i*2+1];
   }
-  bpm_length=loop_max*NPIXELS/whole_bpm;
+  bpm_length=LOOP_COUNT*PIXEL_COUNT/whole_bpm;
+
+  for (int i = 0; i < PIXEL_COUNT; i++) {
+      gravity_map[i] = 127;
+  };
+  set_gravity_range(51, 64, 255);
+  set_gravity_range(90, 110, 255);
+  set_gravity_range(110, 120, 0);
+  set_gravity_range(158, 175, 0);
+  set_gravity_range(188, 209, 255);
+  set_gravity_range(240, 274, 255);
+  set_gravity_range(275, 295, 100);
+  set_gravity_range(299, 315, 255);
+  set_gravity_range(362, 370, 0);
+  set_gravity_range(382, 392, 0);
+  set_gravity_range(404, 413, 0);
+  set_gravity_range(430, 437, 0);
+  set_gravity_range(460, 498, 255);
+  set_gravity_range(555, 590, 0);
+  set_gravity_range(602, 621, 0);
+  set_gravity_range(625, 631, 220);
+  set_gravity_range(636, 650, 100);
+  set_gravity_range(653, 700, 255);
+  set_gravity_range(705, 761, 0);
+  set_gravity_range(768, 820, 255);
+  set_gravity_range(824, 890, 0);
+  track.begin();
+
+  loops[0] = 0;
+  loops[1] = 0;
+  loops[2] = 0;
+  loops[3] = 0;
   
-  /*while (true){
-    if (digitalRead(6)==HIGH){
-      pinMode(PI)
-    }
-    //tone(PIN_AUDIO, 400, 100);
-    winner_fx();
-    //delay(10000);
-  }*/
-    for (int i = 0; i < NPIXELS; i++)
-    {
-        gravity_map[i] = 127;
-    };
-    set_gravity_range(51, 64, 255);
-    set_gravity_range(90, 110, 255);
-    set_gravity_range(110, 120, 0);
-    set_gravity_range(158, 175, 0);
-    set_gravity_range(188, 209, 255);
-    set_gravity_range(240, 274, 255);
-    set_gravity_range(275, 295, 100);
-    set_gravity_range(299, 315, 255);
-    set_gravity_range(362, 370, 0);
-    set_gravity_range(382, 392, 0);
-    set_gravity_range(404, 413, 0);
-    set_gravity_range(430, 437, 0);
-    set_gravity_range(460, 498, 255);
-    set_gravity_range(555, 590, 0);
-    set_gravity_range(602, 621, 0);
-    set_gravity_range(625, 631, 220);
-    set_gravity_range(636, 650, 100);
-    set_gravity_range(653, 700, 255);
-    set_gravity_range(705, 761, 0);
-    set_gravity_range(768, 820, 255);
-    set_gravity_range(824, 890, 0);
-    track.begin();
-    
-    //pinMode(PIN_AUDIO, OUTPUT);
-    //set_ramp(28, 80, 101, 124);
-    //set_ramp(26, 135, 158, 178);
-    //set_loop(10, 20, 50, 80);
-    //for (int i = 0; i < NPIXELS; i++)
-    //{
-      //  track.setPixelColor(i, track.Color(125, 0, (45 - gravity_map[i]) / 8)); //127
-    //}
+  // Uncomment to viusalize the leds with gravity not equal to 127
+  /*for (int i = 0; i < PIXEL_COUNT; i++) {
+    int gm = gravity_map[i];
+    track.setPixelColor(i, color(0, gm > 127 ? (gm-128) : 0, gm <= 127 ? (127-gm) : 0));
+  }
+  for (int i = 0; i < PIXEL_COUNT; i+=10) {
+    track.setPixelColor(i, color(255,255,255));
+  }
+  track.show();
+  while(1);*/
 
-    /*PIN[0] = PIN_P1;
-    PIN[1] = PIN_P2;
-    PIN[2] = PIN_P3;
-    PIN[3] = PIN_P4;*/
-
-    loops[0] = 0;
-    loops[1] = 0;
-    loops[2] = 0;
-    loops[3] = 0;
-
-
-    //randomSeed(analogRead(1));
-    
-    // Color the ramp and loops
-    // Viusalize the leds with gravity not equal to 127.
-    /*for (int i = 0; i < NPIXELS; i++) {
-      int gm = gravity_map[i];
-      track.setPixelColor(i, track.Color(0, gm > 127 ? (gm-128) : 0, gm <= 127 ? (127-gm) : 0));
-    }
-    for (int i = 0; i < NPIXELS; i+=10)
-      track.setPixelColor(i, track.Color(255,255,255));
-    track.show();
-    while(1);*/
-    //tone(PIN_AUDIO, 400);
-    start_race();
-
-
+  start_race();
 }
 
 void reproduce_music() {
@@ -553,8 +423,6 @@ void reproduce_music() {
     delay(noteDuration*0.9);
     my_tone(1);
     delay(0.1);
-    // Wait for the specief duration before playing the next note.
-    
     
     // stop the waveform generation before the next note.
     my_tone(1);
@@ -562,102 +430,68 @@ void reproduce_music() {
 }
 
 
-void winner_fx()
-{
-    pinMode(PIN_LED_GRAANDI, OUTPUT);
-    digitalWrite(PIN_LED_GRAANDI, HIGH);
-    reproduce_music();
-    
-    digitalWrite(PIN_LED_GRAANDI, LOW);
+void winner_fx() {
+  digitalWrite(PIN_FINAL_LIGHTS, HIGH);
+  reproduce_music();
+  digitalWrite(PIN_FINAL_LIGHTS, LOW);
 }
-int count=0;
+
 void loop()
 {
-  
-    double best=0.0;
-    for(int i=0; i<MAX_PLAYERS; i++){
-      if(best<dists[i]){
-        best=dists[i];
+  double best=0.0;
+  for(int i=0; i<PLAYER_COUNT; i++){
+    if(best<dists[i]){
+      best=dists[i];
+    }
+  }
+  reproduce_progressive(best);
+
+  for(int i=0;i<PIXEL_COUNT;i++)
+  {
+    track.setPixelColor(i, color(0,0,0));
+  }
+
+  bool intrr[4];
+  for(int i=0; i<4; i++){
+    intrr[i] = false;
+  }
+  while(Serial2.available()){
+    int z = Serial2.read();
+    if (z > 0)
+      intrr[z-1] = true;
+  }
+
+  for (int i = 0; i < PLAYER_COUNT; i++) {
+    if(intrr[i]) {
+      speeds[i] += ACCELERATION;
+    }
+    if ((gravity_map[(word)dists[i] % PIXEL_COUNT]) < 127)
+      speeds[i] -= GRAVITY * (127 - (gravity_map[(word)dists[i] % PIXEL_COUNT]));
+    if ((gravity_map[(word)dists[i] % PIXEL_COUNT]) > 127)
+      speeds[i] += GRAVITY * ((gravity_map[(word)dists[i] % PIXEL_COUNT]) - 127);
+
+    speeds[i] -= speeds[i] * FRICTION;
+    dists[i] += speeds[i];
+  }
+
+  for (int j = 0; j < PLAYER_COUNT; j++) {
+    if (dists[j] > PIXEL_COUNT * loops[j]) {
+      loops[j]++;
+      if(loops[j] > LOOP_COUNT) {
+          for (int i = 0; i < PIXEL_COUNT; i++) {
+            if (i%10==0) {
+              track.setPixelColor(i, colors[j]);
+            }
+          }
+          track.show();
+          winner_fx();
+
+          start_race();
+          break;
       }
     }
-    reproduce_progressive(best);
-    for(int i=0;i<NPIXELS;i++)
-    {
-        track.setPixelColor(i, track.Color(0,0,0));
-    }
-    bool intrr[4];
-    for(int i=0; i<4; i++){
-      intrr[i]=false;
-    }
-    while(Serial2.available()){
-      //Serial2.print((char)Serial2.read());
-      int z = Serial2.read();
-      //Serial2.read();
-      //Serial2.println(z);
-      if(z>0)
-        intrr[z-1]=true;
-    }
-      for (int i = 0; i < MAX_PLAYERS; i++)
-      {
-      
-        if(intrr[i])//(digitalRead(PIN[i]) == 0))
-        {
-            speeds[i] += ACEL;
-        }
-        if ((gravity_map[(word)dists[i] % NPIXELS]) < 127)
-            speeds[i] -= g_force * (127 - (gravity_map[(word)dists[i] % NPIXELS]));
-        if ((gravity_map[(word)dists[i] % NPIXELS]) > 127)
-            speeds[i] += g_force * ((gravity_map[(word)dists[i] % NPIXELS]) - 127);
-
-        speeds[i] -= speeds[i] * friction;
-        dists[i] += speeds[i];
-    }
-    for (int j = 0; j < MAX_PLAYERS; j++)
-    {
-        if (dists[j] > NPIXELS * loops[j])
-        {
-            loops[j]++;
-            //tone(PIN_AUDIO, 600);
-            TBEEP = 2;
-        }
-    }
-
-    for (int j = 0; j < MAX_PLAYERS; j++)
-    {
-        if(loops[j] > loop_max)
-        {
-            for (int i = 0; i < NPIXELS; i++)
-            {
-              if(i%10==0){
-                track.setPixelColor(i, colors[j]);
-              }
-            }
-            track.show();
-            winner_fx();
-            
-            start_race();
-            break;
-        }
-    }
-    for (int j = 0; j < MAX_PLAYERS; j++)
-    {
-      draw_car(j);
-    }
-    count++;
-  //if(count%3==0){
-    track.show();
-  /*}{
-    delay(3);
-    }*/
-    
-    //delay(tdelay);
-
-    if (TBEEP > 0)
-    {
-        TBEEP -= 1;
-        if (TBEEP == 0)
-        {
-            //noTone(PIN_AUDIO);
-        }
-    }
+    draw_car(j);
+  }
+  
+  track.show();
 }
