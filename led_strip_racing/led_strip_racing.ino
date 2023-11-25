@@ -151,6 +151,9 @@ void start_race() {
     dists[k] = 0;
     speeds[k] = 0;
   }
+
+  // reset progressive music
+  reproduceMusicProgressive(0.0);
 }
 
 
@@ -213,17 +216,22 @@ void onPlayerWon(int i) {
   start_race();
 }
 
+void handleProgressiveMusic() {
+  double best = 0.0;
+  for (int i=0; i<PLAYER_COUNT; i++) {
+    if (best < dists[i]) {
+      best = dists[i];
+    }
+  }
+  reproduceMusicProgressive(best / (LOOP_COUNT * PIXEL_COUNT));
+}
+
 void loop() {
   // redraw the track from start
   track.clear();
 
-  double best=0.0;
-  for(int i=0; i<PLAYER_COUNT; i++){
-    if(best<dists[i]){
-      best=dists[i];
-    }
-  }
-  reproduceMusicProgressive(best);
+  // play music progressively to the position of the track
+  handleProgressiveMusic();
 
   // check for button presses from the other Arduino
   bool pressed[PLAYER_COUNT];
