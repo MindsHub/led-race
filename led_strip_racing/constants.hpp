@@ -49,7 +49,7 @@ constexpr uint32_t COLOR8 = color(153, 255, 255);
 constexpr uint32_t COLORS[] = {COLOR1, COLOR2, COLOR3, COLOR4, COLOR5, COLOR6, COLOR7, COLOR8};
 
 
-/// A 19-color rainbow to draw as halo in some place of the led
+/// A 19-color rainbow to draw as halo in some place of the led strip
 constexpr uint32_t RAINBOW[] = {
   color(255, 0, 0),
   color(255, 53, 0),

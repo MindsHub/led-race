@@ -143,7 +143,7 @@ void handleProgressiveMusic() {
 }
 
 void loop() {
-  // redraw the track from start
+  // redraw the led strip from scratch
   track.clear();
 
   // play music progressively to the position of the first player
@@ -184,5 +184,6 @@ void loop() {
     draw_car(j);
   }
   
+  // show the updated pixels on the led strip
   track.show();
 }
