@@ -80,12 +80,10 @@ void start_race() {
 }
 
 
-void setup() {
-  Serial2.begin(115200);
-
-  pinMode(PIN_FINAL_LIGHTS, OUTPUT);
-
+void visualizeGravity() {
+  // print the gravity array out to serial 
   Serial.begin(2000000);
+  Serial.println();
   Serial.println();
   for(int i=0; i<PIXEL_COUNT; ++i) {
     Serial.print(gravityMap(i));
@@ -95,11 +93,9 @@ void setup() {
     }
   }
   Serial.println();
-  while(1);
-  track.begin();
-  
-  // Uncomment to viusalize the leds with gravity not equal to 127
-  /*for (int i = 0; i < PIXEL_COUNT; i++) {
+
+  // display the gravity on the led strip
+  for (int i = 0; i < PIXEL_COUNT; i++) {
     int gm = gravityMap[i];
     track.setPixelColor(i, color(0, gm > 127 ? (gm-128) : 0, gm <= 127 ? (127-gm) : 0));
   }
@@ -107,7 +103,17 @@ void setup() {
     track.setPixelColor(i, color(255,255,255));
   }
   track.show();
-  while(1);*/
+
+  while(1);
+}
+
+void setup() {
+  Serial2.begin(115200);
+  pinMode(PIN_FINAL_LIGHTS, OUTPUT);
+  track.begin();
+  
+  // uncomment to viusalize the leds with gravity not equal to 127
+  // visualizeGravity();
 
   start_race();
 }
