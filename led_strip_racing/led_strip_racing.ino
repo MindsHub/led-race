@@ -96,7 +96,7 @@ void visualizeGravity() {
 
   // display the gravity on the led strip
   for (int i = 0; i < PIXEL_COUNT; i++) {
-    int gm = gravityMap[i];
+    int gm = gravityMap(i);
     track.setPixelColor(i, color(0, gm > 127 ? (gm-128) : 0, gm <= 127 ? (127-gm) : 0));
   }
   for (int i = 0; i < PIXEL_COUNT; i+=10) {
