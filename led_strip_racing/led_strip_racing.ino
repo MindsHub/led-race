@@ -146,7 +146,7 @@ void loop() {
   // redraw the track from start
   track.clear();
 
-  // play music progressively to the position of the track
+  // play music progressively to the position of the first player
   handleProgressiveMusic();
 
   // check for button presses from the other Arduino
@@ -166,11 +166,7 @@ void loop() {
       speeds[i] += ACCELERATION;
     }
 
-    if ((gravityMap((word)dists[i] % PIXEL_COUNT)) < 127)
-      speeds[i] -= GRAVITY * (127 - (gravityMap((word)dists[i] % PIXEL_COUNT)));
-    if ((gravityMap((word)dists[i] % PIXEL_COUNT)) > 127)
-      speeds[i] += GRAVITY * ((gravityMap((word)dists[i] % PIXEL_COUNT)) - 127);
-
+    speeds[i] += GRAVITY * (gravityMap((word)dists[i] % PIXEL_COUNT) - 127);
     speeds[i] -= speeds[i] * FRICTION;
     dists[i] += speeds[i];
 
