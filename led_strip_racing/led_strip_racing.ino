@@ -88,7 +88,7 @@ void setup() {
   Serial.begin(2000000);
   Serial.println();
   for(int i=0; i<PIXEL_COUNT; ++i) {
-    Serial.print(pgm_read_byte(&gravityMap[i]));
+    Serial.print(gravityMap(i));
     Serial.print(" ");
     if (i%45 == 44) {
       Serial.println();
@@ -160,10 +160,10 @@ void loop() {
       speeds[i] += ACCELERATION;
     }
 
-    if ((gravityMap[(word)dists[i] % PIXEL_COUNT]) < 127)
-      speeds[i] -= GRAVITY * (127 - (gravityMap[(word)dists[i] % PIXEL_COUNT]));
-    if ((gravityMap[(word)dists[i] % PIXEL_COUNT]) > 127)
-      speeds[i] += GRAVITY * ((gravityMap[(word)dists[i] % PIXEL_COUNT]) - 127);
+    if ((gravityMap((word)dists[i] % PIXEL_COUNT)) < 127)
+      speeds[i] -= GRAVITY * (127 - (gravityMap((word)dists[i] % PIXEL_COUNT)));
+    if ((gravityMap((word)dists[i] % PIXEL_COUNT)) > 127)
+      speeds[i] += GRAVITY * ((gravityMap((word)dists[i] % PIXEL_COUNT)) - 127);
 
     speeds[i] -= speeds[i] * FRICTION;
     dists[i] += speeds[i];
