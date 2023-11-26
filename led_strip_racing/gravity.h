@@ -48,17 +48,17 @@ struct Array_impl {
 
 template<int... Rest>
 struct Array_impl<0, Rest...> {
-  static constexpr byte value[] = { Rest... };
+  static constexpr byte PROGMEM value[] = { Rest... };
 };
 
 template<int... Rest>
 struct Array_impl<1, Rest...> {
-  static constexpr byte value[] = { computeGravity(0, 0), Rest... };
+  static constexpr byte PROGMEM value[] = { computeGravity(0, 0), Rest... };
 };
 
 template<int... Rest>
 struct Array_impl<2, Rest...> {
-  static constexpr byte value[] = { computeGravity(0, 0), computeGravity(1, 0), Rest... };
+  static constexpr byte PROGMEM value[] = { computeGravity(0, 0), computeGravity(1, 0), Rest... };
 };
 
 template<int... Rest>

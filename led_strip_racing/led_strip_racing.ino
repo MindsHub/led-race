@@ -85,6 +85,17 @@ void setup() {
 
   pinMode(PIN_FINAL_LIGHTS, OUTPUT);
 
+  Serial.begin(2000000);
+  Serial.println();
+  for(int i=0; i<PIXEL_COUNT; ++i) {
+    Serial.print(pgm_read_byte(&gravityMap[i]));
+    Serial.print(" ");
+    if (i%45 == 44) {
+      Serial.println();
+    }
+  }
+  Serial.println();
+  while(1);
   track.begin();
   
   // Uncomment to viusalize the leds with gravity not equal to 127
