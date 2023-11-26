@@ -1,10 +1,7 @@
 #include <Adafruit_NeoPixel.h>
 #include "music.h"
 #include "constants.h"
-
-/// 127 is the normal gravity. Values under this value means there is a hill,
-/// while values above 127 means there is a downhill.
-byte gravity_map[PIXEL_COUNT];
+#include "gravity.h"
 
 // current speeds, positions and number of loops of all the players
 float speeds[PLAYER_COUNT];
@@ -14,12 +11,6 @@ float loops[PLAYER_COUNT];
 /// Neopixel class for the led strip.
 Adafruit_NeoPixel track = Adafruit_NeoPixel(PIXEL_COUNT, PIN_LED, NEO_GRB + NEO_KHZ800);
 
-
-void set_gravity_range(int start, int end, byte value) {
-  for (int i=start; i<=end; ++i) {
-    gravity_map[i] = value;
-  }
-}
 
 void draw_car(int index) {
   track.setPixelColor(((word)dists[index] % PIXEL_COUNT), COLORS[index]);
@@ -94,35 +85,11 @@ void setup() {
 
   pinMode(PIN_FINAL_LIGHTS, OUTPUT);
 
-  for (int i = 0; i < PIXEL_COUNT; i++) {
-    gravity_map[i] = 127;
-  };
-  set_gravity_range(51, 64, 255);
-  set_gravity_range(90, 110, 255);
-  set_gravity_range(110, 120, 0);
-  set_gravity_range(158, 175, 0);
-  set_gravity_range(188, 209, 255);
-  set_gravity_range(240, 274, 255);
-  set_gravity_range(275, 295, 100);
-  set_gravity_range(299, 315, 255);
-  set_gravity_range(362, 370, 0);
-  set_gravity_range(382, 392, 0);
-  set_gravity_range(404, 413, 0);
-  set_gravity_range(430, 437, 0);
-  set_gravity_range(460, 498, 255);
-  set_gravity_range(555, 590, 0);
-  set_gravity_range(602, 621, 0);
-  set_gravity_range(625, 631, 220);
-  set_gravity_range(636, 650, 100);
-  set_gravity_range(653, 700, 255);
-  set_gravity_range(705, 761, 0);
-  set_gravity_range(768, 820, 255);
-  set_gravity_range(824, 890, 0);
   track.begin();
   
   // Uncomment to viusalize the leds with gravity not equal to 127
   /*for (int i = 0; i < PIXEL_COUNT; i++) {
-    int gm = gravity_map[i];
+    int gm = gravityMap[i];
     track.setPixelColor(i, color(0, gm > 127 ? (gm-128) : 0, gm <= 127 ? (127-gm) : 0));
   }
   for (int i = 0; i < PIXEL_COUNT; i+=10) {
@@ -182,10 +149,10 @@ void loop() {
       speeds[i] += ACCELERATION;
     }
 
-    if ((gravity_map[(word)dists[i] % PIXEL_COUNT]) < 127)
-      speeds[i] -= GRAVITY * (127 - (gravity_map[(word)dists[i] % PIXEL_COUNT]));
-    if ((gravity_map[(word)dists[i] % PIXEL_COUNT]) > 127)
-      speeds[i] += GRAVITY * ((gravity_map[(word)dists[i] % PIXEL_COUNT]) - 127);
+    if ((gravityMap[(word)dists[i] % PIXEL_COUNT]) < 127)
+      speeds[i] -= GRAVITY * (127 - (gravityMap[(word)dists[i] % PIXEL_COUNT]));
+    if ((gravityMap[(word)dists[i] % PIXEL_COUNT]) > 127)
+      speeds[i] += GRAVITY * ((gravityMap[(word)dists[i] % PIXEL_COUNT]) - 127);
 
     speeds[i] -= speeds[i] * FRICTION;
     dists[i] += speeds[i];
