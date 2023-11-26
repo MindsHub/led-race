@@ -1,23 +1,6 @@
 #include "music.hpp"
 
 
-// sizeof gives the number of bytes, each int value is composed of two bytes (16 bits)
-// there are two values per note (pitch and duration), so for each note there are four bytes
-constexpr int melodyCount = sizeof(melody) / sizeof(melody[0]) / 2;
-
-constexpr double dividerToDuration(int divider) {
-  return (divider > 0) ? (1.0 / divider) : (-1.5 / divider);
-}
-
-constexpr double calculateMelodyDuration(int i) {
-  // need to use a recursive approach because C++14 only supports return-only constexpr
-  return (i >= melodyCount) ? 0 : (dividerToDuration(melody[i*2+1]) + calculateMelodyDuration(i+1));
-}
-
-// the melody duration, expressed in wholenotes
-constexpr double melodyDuration = calculateMelodyDuration(0);
-
-
 void myTone(uint16_t frequency) {
   // pass the frequency to play to the other Arduino
   char *ptr = (char *) &frequency;
@@ -39,10 +22,10 @@ void reproduceMusic(int tempo) {
   // iterate over the notes of the melody. 
   // Remember, the array is twice the number of notes (notes + durations)
   for (int thisNote = 0; thisNote < melodyCount * 2; thisNote = thisNote + 2) {
-    double noteDuration = wholenote * dividerToDuration(melody[thisNote + 1]);
+    double noteDuration = wholenote * dividerToDuration(melody(thisNote + 1));
 
     // we only play the note for 90% of the duration, leaving 10% as a pause
-    myTone(melody[thisNote]);
+    myTone(melody(thisNote));
     delay(noteDuration*0.9);
     myNoTone();
     delay(noteDuration*0.1);
@@ -69,12 +52,12 @@ void reproduceMusicProgressive(double pos) {
     lastUpdate = millis();
 
     if (melodyIndex % 2 == 1) {
-      reproduceUntilPos += dividerToDuration(melody[melodyIndex]) / melodyDuration * 0.1;
+      reproduceUntilPos += dividerToDuration(melody(melodyIndex)) / melodyDuration * 0.1;
       myNoTone();
 
     } else {
-      reproduceUntilPos += dividerToDuration(melody[melodyIndex+1]) / melodyDuration * 0.9;
-      myTone(melody[melodyIndex]);
+      reproduceUntilPos += dividerToDuration(melody(melodyIndex+1)) / melodyDuration * 0.9;
+      myTone(melody(melodyIndex));
     }
 
   } else if (millis() - lastUpdate > 1000) {
