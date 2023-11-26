@@ -1,5 +1,5 @@
-#include "gravity.h"
-#include "constants.h"
+#include "gravity.hpp"
+#include "constants.hpp"
 
 struct GravityRange {
   int fromInclusive;

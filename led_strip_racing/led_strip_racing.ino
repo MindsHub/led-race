@@ -1,7 +1,7 @@
 #include <Adafruit_NeoPixel.h>
-#include "music.h"
-#include "constants.h"
-#include "gravity.h"
+#include "music.hpp"
+#include "constants.hpp"
+#include "gravity.hpp"
 
 // current speeds, positions and number of loops of all the players
 float speeds[PLAYER_COUNT];

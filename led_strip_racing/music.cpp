@@ -1,4 +1,4 @@
-#include "music.h"
+#include "music.hpp"
 
 
 // sizeof gives the number of bytes, each int value is composed of two bytes (16 bits)
