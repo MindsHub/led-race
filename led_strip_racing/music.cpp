@@ -35,7 +35,9 @@ void reproduceMusic(int tempo) {
   }
 }
 
-void reproduceMusicProgressive(double pos) {
+// millis() is wrong when interrupts are sometimes disabled,
+// so ask the caller to pass timeMillis instead
+void reproduceMusicProgressive(double pos, unsigned long timeMillis) {
   static int melodyIndex = 0;
   static unsigned long lastUpdate = 0;
   static double reproduceUntilPos = 0.0;
@@ -43,13 +45,13 @@ void reproduceMusicProgressive(double pos) {
   // both pos and reproduceUntilPos range between 0.0 and 1.0
   if (pos <= 0.0 || pos >= 1.0) {
     melodyIndex = 0;
-    lastUpdate = millis();
+    lastUpdate = timeMillis;
     reproduceUntilPos = 0.0;
     myNoTone();
 
   } else if (pos > reproduceUntilPos) {
     melodyIndex += 1;
-    lastUpdate = millis();
+    lastUpdate = timeMillis;
 
     if (melodyIndex % 2 == 1) {
       reproduceUntilPos += dividerToDuration(melody(melodyIndex)) / melodyDuration * 0.1;
@@ -60,8 +62,10 @@ void reproduceMusicProgressive(double pos) {
       myTone(melody(melodyIndex));
     }
 
-  } else if (millis() - lastUpdate > 1000) {
+  } else if (timeMillis - lastUpdate > 2000) {
+    // if the position didn't change in the last 2 seconds, we can assume the game is not
+    // being played anymore, so the sound is just annoying, let's stop it
     myNoTone();
-    lastUpdate = millis();
+    lastUpdate = timeMillis;
   }
 }

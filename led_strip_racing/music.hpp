@@ -6,4 +6,4 @@ void myTone(uint16_t frequency);
 void myNoTone();
 
 void reproduceMusic(int tempo);
-void reproduceMusicProgressive(double pos);
+void reproduceMusicProgressive(double pos, unsigned long realMillis);

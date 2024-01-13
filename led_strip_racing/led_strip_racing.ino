@@ -8,8 +8,13 @@ float speeds[PLAYER_COUNT];
 float dists[PLAYER_COUNT];
 float loops[PLAYER_COUNT];
 
-/// Neopixel class for the led strip.
+// Neopixel class for the led strip.
 Adafruit_NeoPixel track = Adafruit_NeoPixel(PIXEL_COUNT, PIN_LED, NEO_GRB + NEO_KHZ800);
+
+// The `millis()` function returns wrong values because `track.show()`
+// disables interrupts, including the timer interrupts. So we roughly
+// fix this by summing a constant amount of time per pixel, stored here.
+long additionalMillis = 0;
 
 
 void draw_car(int index) {
@@ -76,7 +81,7 @@ void start_race() {
   }
 
   // reset progressive music
-  reproduceMusicProgressive(0.0);
+  reproduceMusicProgressive(0.0, 0);
 }
 
 
@@ -139,7 +144,7 @@ void handleProgressiveMusic() {
       best = dists[i];
     }
   }
-  reproduceMusicProgressive(best / (LOOP_COUNT * PIXEL_COUNT));
+  reproduceMusicProgressive(best / (LOOP_COUNT * PIXEL_COUNT), millis() + additionalMillis);
 }
 
 void loop() {
@@ -186,4 +191,8 @@ void loop() {
   
   // show the updated pixels on the led strip
   track.show();
+
+  // track.show() sends 24 bits for each pixel, and the bitrate is roughly 800kHz,
+  // so this is the number of milliseconds during which interrupts were disabled
+  additionalMillis += PIXEL_COUNT * 24 / 800;
 }
