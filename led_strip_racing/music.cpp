@@ -53,13 +53,16 @@ void reproduceMusicProgressive(double pos, unsigned long timeMillis) {
     melodyIndex += 1;
     lastUpdate = timeMillis;
 
-    if (melodyIndex % 2 == 1) {
-      reproduceUntilPos += dividerToDuration(melody(melodyIndex)) / melodyDuration * 0.1;
-      myNoTone();
+    // make sure we're not reading past the melody array size
+    if (melodyIndex+1 < melodyCount*2) {
+      if (melodyIndex % 2 == 1) {
+        reproduceUntilPos += dividerToDuration(melody(melodyIndex)) / melodyDuration * 0.1;
+        myNoTone();
 
-    } else {
-      reproduceUntilPos += dividerToDuration(melody(melodyIndex+1)) / melodyDuration * 0.9;
-      myTone(melody(melodyIndex));
+      } else {
+        reproduceUntilPos += dividerToDuration(melody(melodyIndex+1)) / melodyDuration * 0.9;
+        myTone(melody(melodyIndex));
+      }
     }
 
   } else if (timeMillis - lastUpdate > 2000) {
