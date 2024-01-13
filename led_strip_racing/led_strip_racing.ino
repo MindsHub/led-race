@@ -132,6 +132,9 @@ void onPlayerWon(int i) {
   reproduceMusic(140 / DEBUG_SPEED_SCALE);
   digitalWrite(PIN_FINAL_LIGHTS, LOW);
 
+  track.clear();
+  track.show();
+  delay(2000 / DEBUG_SPEED_SCALE);
   start_race();
 }
 
