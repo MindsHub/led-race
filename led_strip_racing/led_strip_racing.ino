@@ -17,27 +17,21 @@ Adafruit_NeoPixel track = Adafruit_NeoPixel(PIXEL_COUNT, PIN_LED, NEO_GRB + NEO_
 long additionalMillis = 0;
 
 
-void draw_car(int index) {
-  track.setPixelColor(((word)dists[index] % PIXEL_COUNT), COLORS[index]);
-  track.setPixelColor(((word)(dists[index]+1) % PIXEL_COUNT), COLORS[index]);
-}
-
+// special halo effect when starting the race, can be removed
 void aureola(uint32_t color) {
   if (PIXEL_COUNT == 900) {
+    // specific to 900 pixels and to how the strip is set up
     for (int i=0; i<19; ++i) {
       track.setPixelColor(i+900-77-10, color == 0 ? 0 : RAINBOW[i]);
     }
   }
 }
 
-
-void start_race() {
+// special effects when starting the race, can be removed
+void start_race_vx() {
   track.clear();
-  track.show();
-  delay(2000 / DEBUG_SPEED_SCALE);
-  // Start the Semaphore. TODO: Add start button in v1.0.1
 
-  // Red light 
+  // red light 
   track.setPixelColor(5, color(0, 0, 0));
   track.setPixelColor(6, color(0, 0, 0));
   track.setPixelColor(4, color(255, 0, 0));
@@ -47,7 +41,7 @@ void start_race() {
   myTone(400);
   delay(2000 / DEBUG_SPEED_SCALE);
 
-  // Yellow Light
+  // yellow Light
   track.setPixelColor(8, color(0, 0, 0));
   track.setPixelColor(7, color(0, 0, 0));
   track.setPixelColor(6, color(255, 255, 0));
@@ -57,7 +51,7 @@ void start_race() {
   myTone(600);
   delay(2000 / DEBUG_SPEED_SCALE);
 
-  // Green Light
+  // green Light
   track.setPixelColor(8, color(0, 255, 0));
   track.setPixelColor(7, color(0, 255, 0));
   aureola(color(255, 0, 0));
@@ -67,6 +61,11 @@ void start_race() {
 
   // turn off audio at the end
   myNoTone();
+}
+
+void start_race() {
+  // visual effects for when the race starts, can be removed if unwanted
+  start_race_vx();
 
   // discard any button press happened in the meantime
   while (Serial2.available()) {
@@ -83,7 +82,6 @@ void start_race() {
   // reset progressive music
   reproduceMusicProgressive(0.0, 0);
 }
-
 
 void visualizeGravity() {
   // print the gravity array out to serial 
@@ -145,6 +143,11 @@ void handleProgressiveMusic() {
     }
   }
   reproduceMusicProgressive(best / (LOOP_COUNT * PIXEL_COUNT), millis() + additionalMillis);
+}
+
+void draw_car(int index) {
+  track.setPixelColor(((word)dists[index] % PIXEL_COUNT), COLORS[index]);
+  track.setPixelColor(((word)(dists[index]+1) % PIXEL_COUNT), COLORS[index]);
 }
 
 void loop() {
