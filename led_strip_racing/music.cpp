@@ -21,7 +21,7 @@ void reproduceMusic(int track_index, int tempo) {
 
   // iterate over the notes of the melody.
   // Remember, the array is twice the number of notes (notes + durations)
-  for (int thisNote = 0; thisNote < melodyCount * 2; thisNote = thisNote + 2) {
+  for (int thisNote = 0; thisNote < noteCount(track_index) * 2; thisNote = thisNote + 2) {
     double noteDuration = wholenote * dividerToDuration(getNote(track_index, thisNote + 1));
 
     // we only play the note for 90% of the duration, leaving 10% as a pause
@@ -54,13 +54,13 @@ void reproduceMusicProgressive(int track_index, double pos, unsigned long timeMi
     lastUpdate = timeMillis;
 
     // make sure we're not reading past the melody array size
-    if (melodyIndex+1 < melodyCount*2) {
+    if (melodyIndex+1 < noteCount(track_index)*2) {
       if (melodyIndex % 2 == 1) {
-        reproduceUntilPos += dividerToDuration(getNote(track_index, melodyIndex)) / melodyDuration * 0.1;
+        reproduceUntilPos += dividerToDuration(getNote(track_index, melodyIndex)) / trackDuration(track_index) * 0.1;
         myNoTone();
 
       } else {
-        reproduceUntilPos += dividerToDuration(getNote(track_index, melodyIndex+1)) / melodyDuration * 0.9;
+        reproduceUntilPos += dividerToDuration(getNote(track_index, melodyIndex+1)) / trackDuration(track_index) * 0.9;
         myTone(getNote(track_index, melodyIndex));
       }
     }
