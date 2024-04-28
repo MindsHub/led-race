@@ -126,7 +126,6 @@ constexpr PROGMEM int track_merry_christmas[] = {  // Merry Christmas Song
     NOTE_F5,    2,
 };
 
-
 constexpr PROGMEM int track_pacman[] = { // Pacman Song
     NOTE_B4,   16,    NOTE_B5,   16,    NOTE_FS5,  16,    NOTE_DS5,  16,
     NOTE_B5,   32,    NOTE_FS5, -16,    NOTE_DS5,   8,    NOTE_C5,   16,
@@ -134,9 +133,48 @@ constexpr PROGMEM int track_pacman[] = { // Pacman Song
 
     NOTE_B4,   16,    NOTE_B5,   16,    NOTE_FS5,  16,    NOTE_DS5,  16,    NOTE_B5,   32,
     NOTE_FS5, -16,    NOTE_DS5,   8,    NOTE_DS5,  32,    NOTE_E5,   32,    NOTE_F5,   32,
-    NOTE_F5,   32,    NOTE_FS5,  32,    NOTE_G5,   32,    NOTE_G5,   32,    NOTE_GS5,  32,    NOTE_A5,   16,    NOTE_B5,    8
-};
+    NOTE_F5,   32,    NOTE_FS5,  32,    NOTE_G5,   32,    NOTE_G5,   32,    NOTE_GS5,  32,    NOTE_A5,   16,    NOTE_B5,    8,
+    
+    NOTE_B4,   16,    NOTE_B5,   16,    NOTE_FS5,  16,    NOTE_DS5,  16,
+    NOTE_B5,   32,    NOTE_FS5, -16,    NOTE_DS5,   8,    NOTE_C5,   16,
+    NOTE_C6,   16,    NOTE_G6,   16,    NOTE_E6,   16,    NOTE_C6,   32,    NOTE_G6,  -16,    NOTE_E6,    8,
 
+    NOTE_B4,   16,    NOTE_B5,   16,    NOTE_FS5,  16,    NOTE_DS5,  16,    NOTE_B5,   32,
+    NOTE_FS5, -16,    NOTE_DS5,   8,    NOTE_DS5,  32,    NOTE_E5,   32,    NOTE_F5,   32,
+    NOTE_F5,   32,    NOTE_FS5,  32,    NOTE_G5,   32,    NOTE_G5,   32,    NOTE_GS5,  32,    NOTE_A5,   16,    NOTE_B5,    8,
+    
+    NOTE_B4,   16,    NOTE_B5,   16,    NOTE_FS5,  16,    NOTE_DS5,  16,
+    NOTE_B5,   32,    NOTE_FS5, -16,    NOTE_DS5,   8,    NOTE_C5,   16,
+    NOTE_C6,   16,    NOTE_G6,   16,    NOTE_E6,   16,    NOTE_C6,   32,    NOTE_G6,  -16,    NOTE_E6,    8,
+
+    NOTE_B4,   16,    NOTE_B5,   16,    NOTE_FS5,  16,    NOTE_DS5,  16,    NOTE_B5,   32,
+    NOTE_FS5, -16,    NOTE_DS5,   8,    NOTE_DS5,  32,    NOTE_E5,   32,    NOTE_F5,   32,
+    NOTE_F5,   32,    NOTE_FS5,  32,    NOTE_G5,   32,    NOTE_G5,   32,    NOTE_GS5,  32,    NOTE_A5,   16,    NOTE_B5,    8,
+    
+    NOTE_B4,   16,    NOTE_B5,   16,    NOTE_FS5,  16,    NOTE_DS5,  16,
+    NOTE_B5,   32,    NOTE_FS5, -16,    NOTE_DS5,   8,    NOTE_C5,   16,
+    NOTE_C6,   16,    NOTE_G6,   16,    NOTE_E6,   16,    NOTE_C6,   32,    NOTE_G6,  -16,    NOTE_E6,    8,
+
+    NOTE_B4,   16,    NOTE_B5,   16,    NOTE_FS5,  16,    NOTE_DS5,  16,    NOTE_B5,   32,
+    NOTE_FS5, -16,    NOTE_DS5,   8,    NOTE_DS5,  32,    NOTE_E5,   32,    NOTE_F5,   32,
+    NOTE_F5,   32,    NOTE_FS5,  32,    NOTE_G5,   32,    NOTE_G5,   32,    NOTE_GS5,  32,    NOTE_A5,   16,    NOTE_B5,    8,
+    
+    NOTE_B4,   16,    NOTE_B5,   16,    NOTE_FS5,  16,    NOTE_DS5,  16,
+    NOTE_B5,   32,    NOTE_FS5, -16,    NOTE_DS5,   8,    NOTE_C5,   16,
+    NOTE_C6,   16,    NOTE_G6,   16,    NOTE_E6,   16,    NOTE_C6,   32,    NOTE_G6,  -16,    NOTE_E6,    8,
+
+    NOTE_B4,   16,    NOTE_B5,   16,    NOTE_FS5,  16,    NOTE_DS5,  16,    NOTE_B5,   32,
+    NOTE_FS5, -16,    NOTE_DS5,   8,    NOTE_DS5,  32,    NOTE_E5,   32,    NOTE_F5,   32,
+    NOTE_F5,   32,    NOTE_FS5,  32,    NOTE_G5,   32,    NOTE_G5,   32,    NOTE_GS5,  32,    NOTE_A5,   16,    NOTE_B5,    8,
+    
+    NOTE_B4,   16,    NOTE_B5,   16,    NOTE_FS5,  16,    NOTE_DS5,  16,
+    NOTE_B5,   32,    NOTE_FS5, -16,    NOTE_DS5,   8,    NOTE_C5,   16,
+    NOTE_C6,   16,    NOTE_G6,   16,    NOTE_E6,   16,    NOTE_C6,   32,    NOTE_G6,  -16,    NOTE_E6,    8,
+
+    NOTE_B4,   16,    NOTE_B5,   16,    NOTE_FS5,  16,    NOTE_DS5,  16,    NOTE_B5,   32,
+    NOTE_FS5, -16,    NOTE_DS5,   8,    NOTE_DS5,  32,    NOTE_E5,   32,    NOTE_F5,   32,
+    NOTE_F5,   32,    NOTE_FS5,  32,    NOTE_G5,   32,    NOTE_G5,   32,    NOTE_GS5,  32,    NOTE_A5,   16,    NOTE_B5,    8,
+};
 
 constexpr PROGMEM int track_tetris[] = { // Tetris Song
     NOTE_E5,    4,    NOTE_B4,    8,    NOTE_C5,    8,    NOTE_D5,    4,    NOTE_C5,    8,    NOTE_B4,    8,
@@ -170,9 +208,89 @@ constexpr PROGMEM int track_tetris[] = { // Tetris Song
     NOTE_GS5,   2,
 };
 
+constexpr PROGMEM int track_mario_bros[] = { // Mario Bros Song
+  NOTE_E5,8, NOTE_E5,8, REST,8, NOTE_E5,8, REST,8, NOTE_C5,8, NOTE_E5,8, //1
+  NOTE_G5,4, REST,4, NOTE_G4,8, REST,4, 
+  NOTE_C5,-4, NOTE_G4,8, REST,4, NOTE_E4,-4, // 3
+  NOTE_A4,4, NOTE_B4,4, NOTE_AS4,8, NOTE_A4,4,
+  NOTE_G4,-8, NOTE_E5,-8, NOTE_G5,-8, NOTE_A5,4, NOTE_F5,8, NOTE_G5,8,
+  REST,8, NOTE_E5,4,NOTE_C5,8, NOTE_D5,8, NOTE_B4,-4,
+  NOTE_C5,-4, NOTE_G4,8, REST,4, NOTE_E4,-4, // repeats from 3
+  NOTE_A4,4, NOTE_B4,4, NOTE_AS4,8, NOTE_A4,4,
+  NOTE_G4,-8, NOTE_E5,-8, NOTE_G5,-8, NOTE_A5,4, NOTE_F5,8, NOTE_G5,8,
+  REST,8, NOTE_E5,4,NOTE_C5,8, NOTE_D5,8, NOTE_B4,-4,
+
+  
+  REST,4, NOTE_G5,8, NOTE_FS5,8, NOTE_F5,8, NOTE_DS5,4, NOTE_E5,8,//7
+  REST,8, NOTE_GS4,8, NOTE_A4,8, NOTE_C4,8, REST,8, NOTE_A4,8, NOTE_C5,8, NOTE_D5,8,
+  REST,4, NOTE_DS5,4, REST,8, NOTE_D5,-4,
+  NOTE_C5,2, REST,2,
+
+  REST,4, NOTE_G5,8, NOTE_FS5,8, NOTE_F5,8, NOTE_DS5,4, NOTE_E5,8,//repeats from 7
+  REST,8, NOTE_GS4,8, NOTE_A4,8, NOTE_C4,8, REST,8, NOTE_A4,8, NOTE_C5,8, NOTE_D5,8,
+  REST,4, NOTE_DS5,4, REST,8, NOTE_D5,-4,
+  NOTE_C5,2, REST,2,
+
+  NOTE_C5,8, NOTE_C5,4, NOTE_C5,8, REST,8, NOTE_C5,8, NOTE_D5,4,//11
+  NOTE_E5,8, NOTE_C5,4, NOTE_A4,8, NOTE_G4,2,
+
+  NOTE_C5,8, NOTE_C5,4, NOTE_C5,8, REST,8, NOTE_C5,8, NOTE_D5,8, NOTE_E5,8,//13
+  REST,1, 
+  NOTE_C5,8, NOTE_C5,4, NOTE_C5,8, REST,8, NOTE_C5,8, NOTE_D5,4,
+  NOTE_E5,8, NOTE_C5,4, NOTE_A4,8, NOTE_G4,2,
+  NOTE_E5,8, NOTE_E5,8, REST,8, NOTE_E5,8, REST,8, NOTE_C5,8, NOTE_E5,4,
+  NOTE_G5,4, REST,4, NOTE_G4,4, REST,4, 
+  NOTE_C5,-4, NOTE_G4,8, REST,4, NOTE_E4,-4, // 19
+  
+  NOTE_A4,4, NOTE_B4,4, NOTE_AS4,8, NOTE_A4,4,
+  NOTE_G4,-8, NOTE_E5,-8, NOTE_G5,-8, NOTE_A5,4, NOTE_F5,8, NOTE_G5,8,
+  REST,8, NOTE_E5,4, NOTE_C5,8, NOTE_D5,8, NOTE_B4,-4,
+
+  NOTE_C5,-4, NOTE_G4,8, REST,4, NOTE_E4,-4, // repeats from 19
+  NOTE_A4,4, NOTE_B4,4, NOTE_AS4,8, NOTE_A4,4,
+  NOTE_G4,-8, NOTE_E5,-8, NOTE_G5,-8, NOTE_A5,4, NOTE_F5,8, NOTE_G5,8,
+  REST,8, NOTE_E5,4, NOTE_C5,8, NOTE_D5,8, NOTE_B4,-4,
+
+  NOTE_E5,8, NOTE_C5,4, NOTE_G4,8, REST,4, NOTE_GS4,4,//23
+  NOTE_A4,8, NOTE_F5,4, NOTE_F5,8, NOTE_A4,2,
+  NOTE_D5,-8, NOTE_A5,-8, NOTE_A5,-8, NOTE_A5,-8, NOTE_G5,-8, NOTE_F5,-8,
+  
+  NOTE_E5,8, NOTE_C5,4, NOTE_A4,8, NOTE_G4,2, //26
+  NOTE_E5,8, NOTE_C5,4, NOTE_G4,8, REST,4, NOTE_GS4,4,
+  NOTE_A4,8, NOTE_F5,4, NOTE_F5,8, NOTE_A4,2,
+  NOTE_B4,8, NOTE_F5,4, NOTE_F5,8, NOTE_F5,-8, NOTE_E5,-8, NOTE_D5,-8,
+  NOTE_C5,8, NOTE_E4,4, NOTE_E4,8, NOTE_C4,2,
+
+  NOTE_E5,8, NOTE_C5,4, NOTE_G4,8, REST,4, NOTE_GS4,4,//repeats from 23
+  NOTE_A4,8, NOTE_F5,4, NOTE_F5,8, NOTE_A4,2,
+  NOTE_D5,-8, NOTE_A5,-8, NOTE_A5,-8, NOTE_A5,-8, NOTE_G5,-8, NOTE_F5,-8,
+  
+  NOTE_E5,8, NOTE_C5,4, NOTE_A4,8, NOTE_G4,2, //26
+  NOTE_E5,8, NOTE_C5,4, NOTE_G4,8, REST,4, NOTE_GS4,4,
+  NOTE_A4,8, NOTE_F5,4, NOTE_F5,8, NOTE_A4,2,
+  NOTE_B4,8, NOTE_F5,4, NOTE_F5,8, NOTE_F5,-8, NOTE_E5,-8, NOTE_D5,-8,
+  NOTE_C5,8, NOTE_E4,4, NOTE_E4,8, NOTE_C4,2,
+  NOTE_C5,8, NOTE_C5,4, NOTE_C5,8, REST,8, NOTE_C5,8, NOTE_D5,8, NOTE_E5,8,
+  REST,1,
+
+  NOTE_C5,8, NOTE_C5,4, NOTE_C5,8, REST,8, NOTE_C5,8, NOTE_D5,4, //33
+  NOTE_E5,8, NOTE_C5,4, NOTE_A4,8, NOTE_G4,2,
+  NOTE_E5,8, NOTE_E5,8, REST,8, NOTE_E5,8, REST,8, NOTE_C5,8, NOTE_E5,4,
+  NOTE_G5,4, REST,4, NOTE_G4,4, REST,4, 
+  NOTE_E5,8, NOTE_C5,4, NOTE_G4,8, REST,4, NOTE_GS4,4,
+  NOTE_A4,8, NOTE_F5,4, NOTE_F5,8, NOTE_A4,2,
+  NOTE_D5,-8, NOTE_A5,-8, NOTE_A5,-8, NOTE_A5,-8, NOTE_G5,-8, NOTE_F5,-8,
+  
+  NOTE_E5,8, NOTE_C5,4, NOTE_A4,8, NOTE_G4,2, //40
+  NOTE_E5,8, NOTE_C5,4, NOTE_G4,8, REST,4, NOTE_GS4,4,
+  NOTE_A4,8, NOTE_F5,4, NOTE_F5,8, NOTE_A4,2,
+  NOTE_B4,8, NOTE_F5,4, NOTE_F5,8, NOTE_F5,-8, NOTE_E5,-8, NOTE_D5,-8,
+  NOTE_C5,8, NOTE_E4,4, NOTE_E4,8, NOTE_C4,2,
+};
 
 typedef struct {
-  int    loops;
+  int    laps;
+  int    tempo;
   int    note_count;
   double duration;
   int*   track_ptr;
@@ -192,13 +310,15 @@ constexpr double calculateDuration(int* track, int note_count, int note_index) {
 constexpr track_metadata track_metadata_list[] = {
   track_metadata {
     1,
+    140,
     calculateNoteCount(track_merry_christmas),
     calculateDuration(track_merry_christmas, calculateNoteCount(track_merry_christmas), 0),
     track_merry_christmas
   },
 
   track_metadata {
-    2,
+    1,
+    120,
     calculateNoteCount(track_pacman),
     calculateDuration(track_pacman, calculateNoteCount(track_pacman), 0),
     track_pacman
@@ -206,14 +326,31 @@ constexpr track_metadata track_metadata_list[] = {
 
   track_metadata {
     1,
+    220,
     calculateNoteCount(track_tetris),
     calculateDuration(track_tetris, calculateNoteCount(track_tetris), 0),
     track_tetris
+  },
+
+  track_metadata {
+    2,
+    200,
+    calculateNoteCount(track_mario_bros),
+    calculateDuration(track_mario_bros, calculateNoteCount(track_mario_bros), 0),
+    track_mario_bros
   },
 };
 
 const int track_count = sizeof(track_metadata_list) / sizeof(track_metadata);
 
+
+int getLaps(int track_index) {
+  return track_metadata_list[track_index].laps;
+}
+
+int getTempo(int track_index) {
+  return track_metadata_list[track_index].tempo;
+}
 
 int noteCount(int track_index) {
   return track_metadata_list[track_index].note_count;

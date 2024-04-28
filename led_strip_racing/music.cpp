@@ -1,4 +1,5 @@
 #include "music.hpp"
+#include "constants.hpp"
 
 
 void myTone(uint16_t frequency) {
@@ -15,9 +16,9 @@ inline void myNoTone() {
 }
 
 
-void reproduceMusic(int track_index, int tempo) {
+void reproduceMusic(int track_index) {
   // this calculates the duration of a whole note in ms
-  int wholenote = (60000 * 4) / tempo;
+  int wholenote = (60000 * 4) / getTempo(track_index) / DEBUG_SPEED_SCALE;
 
   // iterate over the notes of the melody.
   // Remember, the array is twice the number of notes (notes + durations)

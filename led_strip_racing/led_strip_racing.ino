@@ -137,7 +137,7 @@ void onPlayerWon(int i) {
   track.show();
 
   digitalWrite(PIN_FINAL_LIGHTS, HIGH);
-  reproduceMusic(selected_track, 140 / DEBUG_SPEED_SCALE);
+  reproduceMusic(selected_track);
   digitalWrite(PIN_FINAL_LIGHTS, LOW);
 
   track.clear();
@@ -153,7 +153,7 @@ void handleProgressiveMusic() {
       best = dists[i];
     }
   }
-  reproduceMusicProgressive(selected_track, best / (LOOP_COUNT * PIXEL_COUNT), millis() + additionalMillis);
+  reproduceMusicProgressive(selected_track, best / (getLaps(selected_track) * PIXEL_COUNT), millis() + additionalMillis);
 }
 
 void draw_car(int index) {
@@ -192,7 +192,7 @@ void loop() {
 
     if (dists[i] > PIXEL_COUNT * loops[i]) {
       loops[i]++;
-      if(loops[i] > LOOP_COUNT) {
+      if(loops[i] > getLaps(selected_track)) {
         onPlayerWon(i);
         return; // restart loop() from the beginning
       }
