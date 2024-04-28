@@ -13,6 +13,8 @@ constexpr int RANDOM_SEED_PIN = A0;
 constexpr int PLAYER_COUNT = 2;
 /// Led in the strip. A 5m 60led/m is the best :).
 constexpr int PIXEL_COUNT = 900 / DEBUG_SPEED_SCALE;
+/// How much the final song (played after winning) should last, at most, in millis
+constexpr unsigned long FINAL_SONG_DURATION = 15000; // ms
 
 /// Acceleration value. When a player pushs the button, his speed increases
 /// with this value. Otherwise his speed decreases.

@@ -19,6 +19,7 @@ inline void myNoTone() {
 void reproduceMusic(int track_index) {
   // this calculates the duration of a whole note in ms
   int wholenote = (60000 * 4) / getTempo(track_index) / DEBUG_SPEED_SCALE;
+  unsigned long startMillis = millis();
 
   // iterate over the notes of the melody.
   // Remember, the array is twice the number of notes (notes + durations)
@@ -33,6 +34,11 @@ void reproduceMusic(int track_index) {
 
     // stop the waveform generation before the next note.
     myNoTone();
+
+    if (millis() - startMillis >= FINAL_SONG_DURATION) {
+      // play for at most FINAL_SONG_DURATION milliseconds
+      break;
+    }
   }
 }
 
