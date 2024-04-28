@@ -1,10 +1,10 @@
 #include <avr/pgmspace.h>
 #include "song.hpp"
 
-/* 
+/*
   We Wish You a Merry Christmas
-  More songs available at https://github.com/robsoncouto/arduino-songs                                            
-                                              
+  More songs available at https://github.com/robsoncouto/arduino-songs
+
                                               Robson Couto, 2019
 */
 #define NOTE_B0  31
@@ -102,46 +102,133 @@
 // a 4 means a quarter note, 8 an eighteenth , 16 sixteenth, so on
 // !!negative numbers are used to represent dotted notes,
 // so -4 means a dotted quarter note, that is, a quarter plus an eighteenth!!
-constexpr PROGMEM int melodyImpl[] = {
+constexpr PROGMEM int track_list[][] = {
 
-  // We Wish You a Merry Christmas
-  // Score available at https://musescore.com/user/6208766/scores/1497501
-  
-  NOTE_C5,4, //1
-  NOTE_F5,4, NOTE_F5,8, NOTE_G5,8, NOTE_F5,8, NOTE_E5,8,
-  NOTE_D5,4, NOTE_D5,4, NOTE_D5,4,
-  NOTE_G5,4, NOTE_G5,8, NOTE_A5,8, NOTE_G5,8, NOTE_F5,8,
-  NOTE_E5,4, NOTE_C5,4, NOTE_C5,4,
-  NOTE_A5,4, NOTE_A5,8, NOTE_AS5,8, NOTE_A5,8, NOTE_G5,8,
-  NOTE_F5,4, NOTE_D5,4, NOTE_C5,8, NOTE_C5,8,
-  NOTE_D5,4, NOTE_G5,4, NOTE_E5,4,
-  NOTE_F5,2,
-  
-  NOTE_C5,4,
+  {  // Merry Christmas Song
+    NOTE_C5,    4,
+    NOTE_F5,    4,    NOTE_F5,    8,    NOTE_G5,    8,    NOTE_F5,    8,    NOTE_E5,    8,
+    NOTE_D5,    4,    NOTE_D5,    4,    NOTE_D5,    4,
+    NOTE_G5,    4,    NOTE_G5,    8,    NOTE_A5,    8,    NOTE_G5,    8,    NOTE_F5,    8,
+    NOTE_E5,    4,    NOTE_C5,    4,    NOTE_C5,    4,
+    NOTE_A5,    4,    NOTE_A5,    8,    NOTE_AS5,   8,    NOTE_A5,    8,    NOTE_G5,    8,
+    NOTE_F5,    4,    NOTE_D5,    4,    NOTE_C5,    8,    NOTE_C5,    8,
+    NOTE_D5,    4,    NOTE_G5,    4,    NOTE_E5,    4,
+    NOTE_F5,    2,
 
-  NOTE_F5,4, NOTE_F5,4, NOTE_F5,4,//17
-  NOTE_E5,2, NOTE_E5,4,
-  NOTE_F5,4, NOTE_E5,4, NOTE_D5,4,
-  NOTE_C5,2, NOTE_A5,4,
-  NOTE_AS5,4, NOTE_A5,4, NOTE_G5,4,
-  NOTE_C6,4, NOTE_C5,4, NOTE_C5,8, NOTE_C5,8,
-  NOTE_D5,4, NOTE_G5,4, NOTE_E5,4,
-  NOTE_F5,2,
+    NOTE_C5,    4,
 
+    NOTE_F5,    4,    NOTE_F5,    4,    NOTE_F5,    4,
+    NOTE_E5,    2,    NOTE_E5,    4,
+    NOTE_F5,    4,    NOTE_E5,    4,    NOTE_D5,    4,
+    NOTE_C5,    2,    NOTE_A5,    4,
+    NOTE_AS5,   4,    NOTE_A5,    4,    NOTE_G5,    4,
+    NOTE_C6,    4,    NOTE_C5,    4,    NOTE_C5,    8,    NOTE_C5,    8,
+    NOTE_D5,    4,    NOTE_G5,    4,    NOTE_E5,    4,
+    NOTE_F5,    2,
+  },
+
+
+  { // Pacman Song
+    NOTE_B4,   16,    NOTE_B5,   16,    NOTE_FS5,  16,    NOTE_DS5,  16,
+    NOTE_B5,   32,    NOTE_FS5, -16,    NOTE_DS5,   8,    NOTE_C5,   16,
+    NOTE_C6,   16,    NOTE_G6,   16,    NOTE_E6,   16,    NOTE_C6,   32,    NOTE_G6,  -16,    NOTE_E6,    8,
+
+    NOTE_B4,   16,    NOTE_B5,   16,    NOTE_FS5,  16,    NOTE_DS5,  16,    NOTE_B5,   32,
+    NOTE_FS5, -16,    NOTE_DS5,   8,    NOTE_DS5,  32,    NOTE_E5,   32,    NOTE_F5,   32,
+    NOTE_F5,   32,    NOTE_FS5,  32,    NOTE_G5,   32,    NOTE_G5,   32,    NOTE_GS5,  32,    NOTE_A5,   16,    NOTE_B5,    8
+  },
+
+
+  { // Tetris Song
+    NOTE_E5,    4,    NOTE_B4,    8,    NOTE_C5,    8,    NOTE_D5,    4,    NOTE_C5,    8,    NOTE_B4,    8,
+    NOTE_A4,    4,    NOTE_A4,    8,    NOTE_C5,    8,    NOTE_E5,    4,    NOTE_D5,    8,    NOTE_C5,    8,
+    NOTE_B4,   -4,    NOTE_C5,    8,    NOTE_D5,    4,    NOTE_E5,    4,
+    NOTE_C5,    4,    NOTE_A4,    4,    NOTE_A4,    8,    NOTE_A4,    4,    NOTE_B4,    8,    NOTE_C5,    8,
+
+    NOTE_D5,   -4,    NOTE_F5,    8,    NOTE_A5,    4,    NOTE_G5,    8,    NOTE_F5,    8,
+    NOTE_E5,   -4,    NOTE_C5,    8,    NOTE_E5,    4,    NOTE_D5,    8,    NOTE_C5,    8,
+    NOTE_B4,    4,    NOTE_B4,    8,    NOTE_C5,    8,    NOTE_D5,    4,    NOTE_E5,    4,
+    NOTE_C5,    4,    NOTE_A4,    4,    NOTE_A4,    4,    REST,       4,
+
+    NOTE_E5,    4,    NOTE_B4,    8,    NOTE_C5,    8,    NOTE_D5,    4,    NOTE_C5,    8,    NOTE_B4,    8,
+    NOTE_A4,    4,    NOTE_A4,    8,    NOTE_C5,    8,    NOTE_E5,    4,    NOTE_D5,    8,    NOTE_C5,    8,
+    NOTE_B4,   -4,    NOTE_C5,    8,    NOTE_D5,    4,    NOTE_E5,    4,
+    NOTE_C5,    4,    NOTE_A4,    4,    NOTE_A4,    8,    NOTE_A4,    4,    NOTE_B4,    8,    NOTE_C5,    8,
+
+    NOTE_D5,   -4,    NOTE_F5,    8,    NOTE_A5,    4,    NOTE_G5,    8,    NOTE_F5,    8,
+    NOTE_E5,   -4,    NOTE_C5,    8,    NOTE_E5,    4,    NOTE_D5,    8,    NOTE_C5,    8,
+    NOTE_B4,    4,    NOTE_B4,    8,    NOTE_C5,    8,    NOTE_D5,    4,    NOTE_E5,    4,
+    NOTE_C5,    4,    NOTE_A4,    4,    NOTE_A4,    4,    REST,       4,
+
+
+    NOTE_E5,    2,    NOTE_C5,    2,
+    NOTE_D5,    2,    NOTE_B4,    2,
+    NOTE_C5,    2,    NOTE_A4,    2,
+    NOTE_GS4,   2,    NOTE_B4,    4,    REST,       8,
+    NOTE_E5,    2,    NOTE_C5,    2,
+    NOTE_D5,    2,    NOTE_B4,    2,
+    NOTE_C5,    4,    NOTE_E5,    4,    NOTE_A5,    2,
+    NOTE_GS5,   2,
+  }
 };
+
+
+typedef struct {
+  int    loops;
+  int    note_count;
+  double duration;
+  int*   track_ptr;
+} track_metadata;
+
 
 // sizeof gives the number of bytes, each int value is composed of two bytes (16 bits)
 // there are two values per note (pitch and duration), so for each note there are four bytes
-const int melodyCount = sizeof(melodyImpl) / sizeof(melodyImpl[0]) / 2;
-
-constexpr double calculateMelodyDuration(int i) {
-  // need to use a recursive approach because C++14 only supports return-only constexpr
-  return (i >= melodyCount) ? 0 : (dividerToDuration(melody(i*2+1)) + calculateMelodyDuration(i+1));
+constexpr int calculateNoteCount(int track_index) {
+  return (track_index >= track_count) ? NULL : sizeof(track_list[track_index]) / sizeof(track_list[track_index][0]) / 2;
 }
 
-// the melody duration, expressed in wholenotes
-const double melodyDuration = calculateMelodyDuration(0);
 
-int melody(int i) {
-  return pgm_read_word(melodyImpl + i);
+constexpr double calculateDuration(int track_index, int note_index) {
+  // need to use a recursive approach because C++14 only supports return-only constexpr
+  return (note_index >= calculateNoteCount(track_index)) ? 0 : (dividerToDuration(melody(note_index*2+1)) + calculateDuration(track_index, note_index+1));
+}
+
+int noteCount(int track_index) {
+  return (track_index >= track_count) ? NULL : track_metadata_list[track_index].note_count;
+}
+
+
+double trackDuration(int track_index) {
+  return (track_index >= track_count) ? NULL : track_metadata_list[track_index].duration;
+}
+
+
+constexpr track_metadata[] track_metadata_list = {
+  track_metadata {
+    1,
+    calculateNoteCount(0),
+    calculateDuration(0, 0),
+    track_list[0]
+  },
+
+  track_metadata {
+    2,
+    calculateNoteCount(1),
+    calculateDuration(1, 0),
+    track_list[1]
+  },
+
+  track_metadata {
+    1,
+    calculateNoteCount(2),
+    calculateDuration(2, 0),
+    track_list[2]
+  },
+}
+
+const int track_count = sizeof(track_metadata_list) / sizeof(track_mentadata);
+
+
+int getNote(int track_index, int note_index) {
+  return pgm_read_word(track_metadata_list[track_index].track_ptr + note_index);
 }

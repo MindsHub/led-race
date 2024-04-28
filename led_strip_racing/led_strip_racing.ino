@@ -8,6 +8,9 @@ float speeds[PLAYER_COUNT];
 float dists[PLAYER_COUNT];
 float loops[PLAYER_COUNT];
 
+// selected track to play
+int selected_track;
+
 // Neopixel class for the led strip.
 Adafruit_NeoPixel track = Adafruit_NeoPixel(PIXEL_COUNT, PIN_LED, NEO_GRB + NEO_KHZ800);
 
@@ -31,7 +34,7 @@ void aureola(uint32_t color) {
 void start_race_vx() {
   track.clear();
 
-  // red light 
+  // red light
   track.setPixelColor(5, color(0, 0, 0));
   track.setPixelColor(6, color(0, 0, 0));
   track.setPixelColor(4, color(255, 0, 0));
@@ -79,12 +82,14 @@ void start_race() {
     speeds[k] = 0;
   }
 
+  selected_track = random(track_count);
+
   // reset progressive music
-  reproduceMusicProgressive(0.0, 0);
+  reproduceMusicProgressive(selected_track, 0.0, 0);
 }
 
 void visualizeGravity() {
-  // print the gravity array out to serial 
+  // print the gravity array out to serial
   Serial.begin(2000000);
   Serial.println();
   Serial.println();
@@ -114,9 +119,12 @@ void setup() {
   Serial2.begin(115200);
   pinMode(PIN_FINAL_LIGHTS, OUTPUT);
   track.begin();
-  
+
   // uncomment to viusalize the leds with gravity not equal to 127
   // visualizeGravity();
+
+  // set random seed
+  randomSeed(analogRead(RANDOM_SEED_PIN));
 
   start_race();
 }
@@ -127,9 +135,9 @@ void onPlayerWon(int i) {
     track.setPixelColor(j, COLORS[i]);
   }
   track.show();
-  
+
   digitalWrite(PIN_FINAL_LIGHTS, HIGH);
-  reproduceMusic(140 / DEBUG_SPEED_SCALE);
+  reproduceMusic(selected_track, 140 / DEBUG_SPEED_SCALE);
   digitalWrite(PIN_FINAL_LIGHTS, LOW);
 
   track.clear();
@@ -145,7 +153,7 @@ void handleProgressiveMusic() {
       best = dists[i];
     }
   }
-  reproduceMusicProgressive(best / (LOOP_COUNT * PIXEL_COUNT), millis() + additionalMillis);
+  reproduceMusicProgressive(selected_track, best / (LOOP_COUNT * PIXEL_COUNT), millis() + additionalMillis);
 }
 
 void draw_car(int index) {
@@ -165,6 +173,7 @@ void loop() {
   for (int i=0; i<PLAYER_COUNT; i++) {
     pressed[i] = false;
   }
+
   while (Serial2.available()) {
     int z = Serial2.read();
     if (z > 0 && z <= PLAYER_COUNT)
@@ -194,7 +203,7 @@ void loop() {
   for (int j = 0; j < PLAYER_COUNT; j++) {
     draw_car(j);
   }
-  
+
   // show the updated pixels on the led strip
   track.show();
 

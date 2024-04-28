@@ -15,21 +15,21 @@ inline void myNoTone() {
 }
 
 
-void reproduceMusic(int tempo) {
+void reproduceMusic(int track_index, int tempo) {
   // this calculates the duration of a whole note in ms
   int wholenote = (60000 * 4) / tempo;
 
-  // iterate over the notes of the melody. 
+  // iterate over the notes of the melody.
   // Remember, the array is twice the number of notes (notes + durations)
   for (int thisNote = 0; thisNote < melodyCount * 2; thisNote = thisNote + 2) {
-    double noteDuration = wholenote * dividerToDuration(melody(thisNote + 1));
+    double noteDuration = wholenote * dividerToDuration(getNote(track_index, thisNote + 1));
 
     // we only play the note for 90% of the duration, leaving 10% as a pause
-    myTone(melody(thisNote));
+    myTone(getNote(track_index, thisNote));
     delay(noteDuration*0.9);
     myNoTone();
     delay(noteDuration*0.1);
-    
+
     // stop the waveform generation before the next note.
     myNoTone();
   }
@@ -37,7 +37,7 @@ void reproduceMusic(int tempo) {
 
 // millis() is wrong when interrupts are sometimes disabled,
 // so ask the caller to pass timeMillis instead
-void reproduceMusicProgressive(double pos, unsigned long timeMillis) {
+void reproduceMusicProgressive(int track_index, double pos, unsigned long timeMillis) {
   static int melodyIndex = 0;
   static unsigned long lastUpdate = 0;
   static double reproduceUntilPos = 0.0;
@@ -56,12 +56,12 @@ void reproduceMusicProgressive(double pos, unsigned long timeMillis) {
     // make sure we're not reading past the melody array size
     if (melodyIndex+1 < melodyCount*2) {
       if (melodyIndex % 2 == 1) {
-        reproduceUntilPos += dividerToDuration(melody(melodyIndex)) / melodyDuration * 0.1;
+        reproduceUntilPos += dividerToDuration(getNote(track_index, melodyIndex)) / melodyDuration * 0.1;
         myNoTone();
 
       } else {
-        reproduceUntilPos += dividerToDuration(melody(melodyIndex+1)) / melodyDuration * 0.9;
-        myTone(melody(melodyIndex));
+        reproduceUntilPos += dividerToDuration(getNote(track_index, melodyIndex+1)) / melodyDuration * 0.9;
+        myTone(getNote(track_index, melodyIndex));
       }
     }
 

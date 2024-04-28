@@ -6,6 +6,8 @@ constexpr int DEBUG_SPEED_SCALE = 1;
 constexpr int PIN_LED = 3;
 /// An additional LED strip or some other lights that turn on after the game finishes.
 constexpr int PIN_FINAL_LIGHTS = 2;
+/// The analog pin to read random seed
+constexpr int RANDOM_SEED_PIN = A0;
 
 /// Max number of players. Don't exceed 8.
 constexpr int PLAYER_COUNT = 2;
@@ -15,10 +17,10 @@ constexpr int PIXEL_COUNT = 900 / DEBUG_SPEED_SCALE;
 constexpr int LOOP_COUNT = 1;
 
 /// Acceleration value. When a player pushs the button, his speed increases
-/// with this value. Otherwise his speed decreases. 
+/// with this value. Otherwise his speed decreases.
 /// An high value means more speed and power :)
 constexpr float ACCELERATION = 0.6;// 0.15;//0.2;
-/// Simulate the friction between asphalt and car's "wheels". Car speed 
+/// Simulate the friction between asphalt and car's "wheels". Car speed
 /// decreases every time with this value.
 constexpr float FRICTION = 0.05;//0.012;
 /// Weight force simulation. Used in loop and ramp "gravity" simulation.
